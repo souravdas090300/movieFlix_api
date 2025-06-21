@@ -72,34 +72,45 @@ app.get("/genres", async (req, res) => {
   }
 });
 
-// Get movies by genre
+// Get genre by name
 app.get("/genres/:name", async (req, res) => {
   try {
-    const movies = await Movies.find({ "Genre.Name": req.params.name });
-    if (movies.length === 0) {
-      return res.status(404).send("No movies found for this genre");
+    const movie = await Movies.findOne({ "Genre.Name": req.params.name });
+    if (!movie) {
+      return res.status(404).send("Genre not found");
     }
-    res.status(200).json(movies);
+    const genre = movie.Genre;
+    res.status(200).json(genre);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error: " + error);
   }
 });
 
-// Get all directors
-app.get("/directors", async (req, res) => {
+// Get genre by name
+app.get("/genres/:name", async (req, res) => {
   try {
-    const directors = await Movies.aggregate([
-      {
-        $group: {
-          _id: "$Director.Name",
-          bio: { $first: "$Director.Bio" },
-          birth: { $first: "$Director.Birth" },
-          death: { $first: "$Director.Death" },
-        },
-      },
-    ]);
-    res.status(200).json(directors);
+    const movie = await Movies.findOne({ "Genre.Name": req.params.name });
+    if (!movie) {
+      return res.status(404).send("Genre not found");
+    }
+    const genre = movie.Genre;
+    res.status(200).json(genre);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error: " + error);
+  }
+});
+
+// Get director by name
+app.get("/directors/:name", async (req, res) => {
+  try {
+    const movie = await Movies.findOne({ "Director.Name": req.params.name });
+    if (!movie) {
+      return res.status(404).send("Director not found");
+    }
+    const director = movie.Director;
+    res.status(200).json(director);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error: " + error);

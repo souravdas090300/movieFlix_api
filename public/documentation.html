@@ -161,7 +161,7 @@
 
         <h4>Example Request:</h4>
         <pre>
-fetch('https://your-api-url.com/movies')
+fetch('http://localhost/movies')
   .then(response => response.json())
   .then(data => console.log(data));</pre
         >
@@ -217,7 +217,7 @@ fetch('https://your-api-url.com/movies')
 
         <h4>Example Request:</h4>
         <pre>
-fetch('https://your-api-url.com/movies/Titanic')
+fetch('http://localhost:8080/movies/Titanic')
   .then(response => response.json())
   .then(data => console.log(data));</pre
         >
@@ -282,7 +282,7 @@ fetch('https://your-api-url.com/movies/Titanic')
 
         <h4>Example Request:</h4>
         <pre>
-fetch('https://your-api-url.com/genres/Science%20Fiction')
+fetch('http://localhost:8080/genres/Drama')
   .then(response => response.json())
   .then(data => console.log(data));</pre
         >
@@ -290,6 +290,10 @@ fetch('https://your-api-url.com/genres/Science%20Fiction')
         <h4>Success Response (200 OK)</h4>
         <div class="response">
           <p>Returns array of movies in the specified genre</p>
+          <pre>{
+    "Name": "Drama",
+    "Description": "Emotionally intense stories exploring human conflicts, relationships, and personal struggles."
+}</pre>
         </div>
       </div>
 
