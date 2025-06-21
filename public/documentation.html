@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myFlix API Documentation</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #f4f4f4;
+      }
+      .container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+      }
+      h1 {
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-top: 0;
+      }
+      h2 {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-left: 4px solid #3498db;
+        margin-top: 30px;
+      }
+      .endpoint {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 25px;
+        border-left: 4px solid #2ecc71;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .method {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        margin-right: 10px;
+        font-family: monospace;
+        color: white;
+      }
+      .get {
+        background-color: #2ecc71;
+      }
+      .post {
+        background-color: #3498db;
+      }
+      .put {
+        background-color: #f39c12;
+      }
+      .delete {
+        background-color: #e74c3c;
+      }
+      code {
+        background-color: #f0f0f0;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9em;
+      }
+      pre {
+        background-color: #282c34;
+        color: #abb2bf;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        font-size: 0.85em;
+        line-height: 1.5;
+        tab-size: 4;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .response {
+        margin-top: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #f8f8f8;
+      }
+      .response h4 {
+        margin-top: 0;
+        color: #2c3e50;
+      }
+      .nav {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .nav a {
+        margin-right: 15px;
+        text-decoration: none;
+        color: #3498db;
+      }
+      .nav a:hover {
+        text-decoration: underline;
+      }
+      footer {
+        margin-top: 50px;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>myFlix API Documentation</h1>
+      <p>
+        Welcome to the myFlix API documentation. This API provides access to a
+        database of movies, directors, genres, and actors.
+      </p>
+
+      <div class="nav">
+        <a href="#movies">Movies</a>
+        <a href="#genres">Genres</a>
+        <a href="#directors">Directors</a>
+        <a href="#actors">Actors/Actresses</a>
+        <a href="#models">Data Models</a>
+        <a href="#database">Database</a>
+      </div>
+
+      <h2 id="movies">Movie Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/movies</code> - Get all movies</span>
+        <p>Returns a list of all movies in the database.</p>
+
+        <h4>Example Request:</h4>
+        <pre>
+fetch('https://your-api-url.com/movies')
+  .then(response => response.json())
+  .then(data => console.log(data));</pre
+        >
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+[
+  {
+    "Title": "Titanic",
+    "Description": "A timeless epic romance and disaster film...",
+    "Genre": {
+      "Name": "Drama",
+      "Description": "Emotionally intense stories..."
+    },
+    "Director": {
+      "Name": "James Cameron",
+      "Bio": "Canadian filmmaker known for epic...",
+      "Birth": "1954-08-16",
+      "Death": null
+    },
+    "Actors": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"],
+    "Actresses": ["Kate Winslet", "Frances Fisher"],
+    "ReleaseYear": 1997,
+    "IMDbRating": 7.9,
+    "ImagePath": "https://m.media-amazon.com/images/...",
+    "Featured": true
+  },
+  ...
+]</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/movies/:title</code> - Get movie by title</span>
+        <p>Returns details about a specific movie by title.</p>
+
+        <h4>Parameters:</h4>
+        <table>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>Title of the movie to retrieve (case sensitive)</td>
+          </tr>
+        </table>
+
+        <h4>Example Request:</h4>
+        <pre>
+fetch('https://your-api-url.com/movies/Titanic')
+  .then(response => response.json())
+  .then(data => console.log(data));</pre
+        >
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+{
+  "Title": "Titanic",
+  "Description": "A timeless epic romance and disaster film...",
+  "Genre": {
+    "Name": "Drama",
+    "Description": "Emotionally intense stories..."
+  },
+  "Director": {
+    "Name": "James Cameron",
+    "Bio": "Canadian filmmaker known for epic...",
+    "Birth": "1954-08-16",
+    "Death": null
+  },
+  "Actors": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"],
+  "Actresses": ["Kate Winslet", "Frances Fisher"],
+  "ReleaseYear": 1997,
+  "IMDbRating": 7.9,
+  "ImagePath": "https://m.media-amazon.com/images/...",
+  "Featured": true
+}</pre
+          >
+        </div>
+      </div>
+
+      <h2 id="genres">Genre Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/genres</code> - Get all genres</span>
+        <p>
+          Returns a list of all genres in the database with their descriptions.
+        </p>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+[
+  {
+    "_id": "Drama",
+    "description": "Emotionally intense stories exploring human conflicts..."
+  },
+  {
+    "_id": "Science Fiction",
+    "description": "Futuristic worlds, advanced tech, space adventures..."
+  }
+]</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/genres/:name</code> - Get movies by genre</span>
+        <p>Returns all movies belonging to a specific genre.</p>
+
+        <h4>Example Request:</h4>
+        <pre>
+fetch('https://your-api-url.com/genres/Science%20Fiction')
+  .then(response => response.json())
+  .then(data => console.log(data));</pre
+        >
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <p>Returns array of movies in the specified genre</p>
+        </div>
+      </div>
+
+      <h2 id="directors">Director Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/directors</code> - Get all directors</span>
+        <p>
+          Returns a list of all directors in the database with their bios and
+          birth/death dates.
+        </p>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+[
+  {
+    "_id": "James Cameron",
+    "bio": "Canadian filmmaker known for epic...",
+    "birth": "1954-08-16",
+    "death": null
+  },
+  {
+    "_id": "Christopher Nolan",
+    "bio": "British-American filmmaker renowned...",
+    "birth": "1970-07-30",
+    "death": null
+  }
+]</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/directors/:name</code> - Get director by name</span>
+        <p>Returns detailed information about a specific director.</p>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+{
+  "name": "James Cameron",
+  "bio": "Canadian filmmaker known for epic...",
+  "birth": "1954-08-16",
+  "death": null,
+  "movies": "Titanic"
+}</pre
+          >
+        </div>
+      </div>
+
+      <h2 id="actors">Actor/Actress Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/actors</code> - Get all actors</span>
+        <p>Returns a list of all actors appearing in movies in the database.</p>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+[
+  "Leonardo DiCaprio",
+  "Arnold Schwarzenegger",
+  "Christian Bale",
+  "Johnny Depp"
+]</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span><code>/actresses</code> - Get all actresses</span>
+        <p>
+          Returns a list of all actresses appearing in movies in the database.
+        </p>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+[
+  "Kate Winslet",
+  "Scarlett Johansson",
+  "Zoe Saldana",
+  "Carrie-Anne Moss"
+]</pre
+          >
+        </div>
+      </div>
+
+      <h2 id="models">Data Models</h2>
+
+      <h3>Movie Model</h3>
+      <pre>
+let movieSchema = mongoose.Schema({
+  Title: { type: String, required: true },
+  Description: { type: String, required: true },
+  Genre: {
+    Name: String,
+    Description: String,
+  },
+  Director: {
+    Name: String,
+    Bio: String,
+    Birth: Date,
+    Death: Date,
+  },
+  Actors: [String],
+  Actresses: [String],
+  ReleaseYear: Number,
+  IMDbRating: Number,
+  ImagePath: String,
+  Featured: Boolean,
+});</pre
+      >
+
+      <h2 id="database">Database Information</h2>
+
+      <h3>MongoDB Connection</h3>
+      <pre>
+mongoose.connect("mongodb://localhost:27017/myFlixDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});</pre
+      >
+
+      <h3>Sample Movie Data</h3>
+      <p>
+        The database contains movies with details about directors, genres,
+        actors, and ratings.
+      </p>
+      <pre>
+{
+  "_id": ObjectId("684026918dda30a4fe6c4bd0"),
+  "Actors": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"],
+  "Actresses": ["Kate Winslet", "Frances Fisher"],
+  "Description": "A timeless epic romance and disaster film...",
+  "Director": {
+    "Name": "James Cameron",
+    "Bio": "Canadian filmmaker known for epic...",
+    "Birth": "1954-08-16",
+    "Death": null
+  },
+  "Featured": true,
+  "Genre": {
+    "Name": "Drama",
+    "Description": "Emotionally intense stories..."
+  },
+  "IMDbRating": 7.9,
+  "ImagePath": "https://m.media-amazon.com/images/...",
+  "ReleaseYear": 1997,
+  "Title": "Titanic"
+}</pre
+      >
+
+      <h2>Error Handling</h2>
+
+            <h2 id="users">User Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span><code>/users</code> - Register a new user</span>
+        <p>Creates a new user account.</p>
+
+        <h4>Request Body:</h4>
+        <table>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Username</td>
+            <td>string</td>
+            <td>Unique username for the user</td>
+          </tr>
+          <tr>
+            <td>Password</td>
+            <td>string</td>
+            <td>User's password</td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>string</td>
+            <td>User's email address</td>
+          </tr>
+          <tr>
+            <td>Birthday</td>
+            <td>Date</td>
+            <td>User's birth date (format: DD/MM/YYYY)</td>
+          </tr>
+        </table>
+
+        <h4>Example Request:</h4>
+        <pre>
+post('http://localhost:8080/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "Username": "francescom",
+    "Password": "muscat@123",
+    "Email": "francesca.muscat@example.com",
+    "Birthday": "15/04/2662"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));</pre
+        >
+
+        <h4>Success Response (201 Created)</h4>
+        <div class="response">
+          <pre>
+{
+  "Username": "francescam",
+  "Email": "francesca.muscat@example.com",
+  "FavoriteMovies": [],
+  "_id": "685418076481525805272401"
+}</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span><code>/users/:username</code> - Update user information</span>
+        <p>Updates an existing user's information.</p>
+
+        <h4>Parameters:</h4>
+        <table>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>string</td>
+            <td>Username of the user to update</td>
+          </tr>
+        </table>
+
+        <h4>Request Body:</h4>
+        <p>Any of the user fields to be updated (Username, Password, Email, Birthday)</p>
+
+        <h4>Example Request:</h4>
+        <pre>
+fetch('http://localhost:8080/users/francescam', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "Username": "francescam",
+    "Password": "muscat@123",
+    "Email": "francesca.muscat@example.com"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));</pre
+        >
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+{
+  "_id": "6854180784815258052724c1",
+  "Username": "francescam",
+  "Password": "muscat@123",
+  "Email": "francesca.muscat@example.com",
+  "FavoriteMovies": [
+    "684026918dda38a4fe6c4bd8",
+    "684826918dda38a4fe6c4bda",
+    "684826918dda38a4fe6c4bdc",
+    "684826918dda38a4fe6c4bda"
+  ]
+}</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span><code>/users/:username/movies/:movieId</code> - Add movie to favorites</span>
+        <p>Adds a movie to a user's list of favorite movies.</p>
+
+        <h4>Parameters:</h4>
+        <table>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>string</td>
+            <td>Username of the user</td>
+          </tr>
+          <tr>
+            <td>movieId</td>
+            <td>string</td>
+            <td>ID of the movie to add to favorites</td>
+          </tr>
+        </table>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <p>Returns updated user document with the new movie in FavoriteMovies array</p>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <span><code>/users/:username/movies/:movieId</code> - Remove movie from favorites</span>
+        <p>Removes a movie from a user's list of favorite movies.</p>
+
+        <h4>Parameters:</h4>
+        <table>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>string</td>
+            <td>Username of the user</td>
+          </tr>
+          <tr>
+            <td>movieId</td>
+            <td>string</td>
+            <td>ID of the movie to remove from favorites</td>
+          </tr>
+        </table>
+
+        <h4>Example Request:</h4>
+        <pre>
+fetch('http://localhost:8080/users/francescam/movies/684026918dda30a4fe6c4bd8
+_id": "685418d7e4815258052724c1" {
+  method: 'delete',
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+{
+  "_id": "685418d7e4815258052724c1",
+  "Username": "francescam",
+  "Password": "muscat@123",
+  "Email": "francesca.muscat@example.com",
+  "FavoriteMovies": [
+    "684626918dda36a4fe6c4bda",
+    "664626918dda36a4fe6c4bdc",
+    "6646269180da38a4fe6c4bde"
+  ]
+}</pre
+          >
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <span><code>/users/:username</code> - Delete user account</span>
+        <p>Deletes a user account.</p>
+
+        <h4>Parameters:</h4>
+        <table>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>string</td>
+            <td>Username of the user to delete</td>
+          </tr>
+        </table>
+
+        <h4>Example Request:</h4>
+        <pre>
+          fetch('http://localhost:8080/users/francescam',)
+        </pre>
+
+        <h4>Success Response (200 OK)</h4>
+        <div class="response">
+          <pre>
+{
+  "message": "User francescam delted successfully."
+}</pre
+          >
+        </div>
+      </div>
+
+      <h2 id="models">Data Models</h2>
+
+      <h3>Movie Model</h3>
+      <pre>
+let movieSchema = mongoose.Schema({
+  Title: { type: String, required: true },
+  Description: { type: String, required: true },
+  Genre: {
+    Name: String,
+    Description: String,
+  },
+  Director: {
+    Name: String,
+    Bio: String,
+    Birth: Date,
+    Death: Date,
+  },
+  Actors: [String],
+  Actresses: [String],
+  ReleaseYear: Number,
+  IMDbRating: Number,
+  ImagePath: String,
+  Featured: Boolean,
+});</pre
+      >
+
+      <h3>User Model</h3>
+      <pre>
+let userSchema = mongoose.Schema({
+  Username: { type: String, required: true },
+  Password: { type: String, required: true },
+  Email: { type: String, required: true },
+  Birthday: Date,
+  FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
+});</pre
+      >
+
+      <h2 id="database">Database Information</h2>
+
+      <h3>MongoDB Connection</h3>
+      <pre>
+mongoose.connect("mongodb://localhost:27017/myFlixDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});</pre
+      >
+
+      <h3>Sample Movie Data</h3>
+      <p>
+        The database contains movies with details about directors, genres,
+        actors, and ratings.
+      </p>
+      <pre>
+{
+  "_id": ObjectId("684026918dda30a4fe6c4bd0"),
+  "Actors": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"],
+  "Actresses": ["Kate Winslet", "Frances Fisher"],
+  "Description": "A timeless epic romance and disaster film...",
+  "Director": {
+    "Name": "James Cameron",
+    "Bio": "Canadian filmmaker known for epic...",
+    "Birth": "1954-08-16",
+    "Death": null
+  },
+  "Featured": true,
+  "Genre": {
+    "Name": "Drama",
+    "Description": "Emotionally intense stories..."
+  },
+  "IMDbRating": 7.9,
+  "ImagePath": "https://m.media-amazon.com/images/...",
+  "ReleaseYear": 1997,
+  "Title": "Titanic"
+}</pre
+      >
+
+      <h3>Sample User Data</h3>
+      <pre>
+{
+  "_id": ObjectId("685418d7e4815258052724c1"),
+  "Username": "francescam",
+  "Password": "muscat@123",
+  "Email": "francesca.muscat@example.com",
+  "Birthday": "2662-04-15T00:00:00.000Z",
+  "FavoriteMovies": [
+    ObjectId("684626918dda36a4fe6c4bda"),
+    ObjectId("664626918dda36a4fe6c4bdc")
+  ]
+}</pre
+      >
+
+      <h2>Error Handling</h2>
+      <p>The API returns appropriate HTTP status codes:</p>
+      <ul>
+        <li><code>200</code> - OK (successful request)</li>
+        <li><code>400</code> - Bad Request (invalid input)</li>
+        <li><code>404</code> - Not Found (resource doesn't exist)</li>
+        <li><code>500</code> - Internal Server Error (server-side problem)</li>
+      </ul>
+
+      <footer>
+        <p>myFlix API Documentation &copy; 2023</p>
+      </footer>
+    </div>
+  </body>
+</html>
