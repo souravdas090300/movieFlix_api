@@ -148,6 +148,7 @@
         <a href="#genres">Genres</a>
         <a href="#directors">Directors</a>
         <a href="#actors">Actors/Actresses</a>
+        <a href="#users">Users</a>
         <a href="#models">Data Models</a>
         <a href="#database">Database</a>
       </div>
@@ -161,7 +162,7 @@
 
         <h4>Example Request:</h4>
         <pre>
-fetch('http://localhost/movies')
+fetch('http://localhost:8080/movies')
   .then(response => response.json())
   .then(data => console.log(data));</pre
         >
@@ -289,11 +290,13 @@ fetch('http://localhost:8080/genres/Drama')
 
         <h4>Success Response (200 OK)</h4>
         <div class="response">
-          <p>Returns array of movies in the specified genre</p>
-          <pre>{
+          <p>Returns Genre Json Object</p>
+          <pre>
+{
     "Name": "Drama",
     "Description": "Emotionally intense stories exploring human conflicts, relationships, and personal struggles."
-}</pre>
+}</pre
+          >
         </div>
       </div>
 
@@ -387,74 +390,7 @@ fetch('http://localhost:8080/genres/Drama')
         </div>
       </div>
 
-      <h2 id="models">Data Models</h2>
-
-      <h3>Movie Model</h3>
-      <pre>
-let movieSchema = mongoose.Schema({
-  Title: { type: String, required: true },
-  Description: { type: String, required: true },
-  Genre: {
-    Name: String,
-    Description: String,
-  },
-  Director: {
-    Name: String,
-    Bio: String,
-    Birth: Date,
-    Death: Date,
-  },
-  Actors: [String],
-  Actresses: [String],
-  ReleaseYear: Number,
-  IMDbRating: Number,
-  ImagePath: String,
-  Featured: Boolean,
-});</pre
-      >
-
-      <h2 id="database">Database Information</h2>
-
-      <h3>MongoDB Connection</h3>
-      <pre>
-mongoose.connect("mongodb://localhost:27017/myFlixDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});</pre
-      >
-
-      <h3>Sample Movie Data</h3>
-      <p>
-        The database contains movies with details about directors, genres,
-        actors, and ratings.
-      </p>
-      <pre>
-{
-  "_id": ObjectId("684026918dda30a4fe6c4bd0"),
-  "Actors": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"],
-  "Actresses": ["Kate Winslet", "Frances Fisher"],
-  "Description": "A timeless epic romance and disaster film...",
-  "Director": {
-    "Name": "James Cameron",
-    "Bio": "Canadian filmmaker known for epic...",
-    "Birth": "1954-08-16",
-    "Death": null
-  },
-  "Featured": true,
-  "Genre": {
-    "Name": "Drama",
-    "Description": "Emotionally intense stories..."
-  },
-  "IMDbRating": 7.9,
-  "ImagePath": "https://m.media-amazon.com/images/...",
-  "ReleaseYear": 1997,
-  "Title": "Titanic"
-}</pre
-      >
-
-      <h2>Error Handling</h2>
-
-            <h2 id="users">User Endpoints</h2>
+      <h2 id="users">User Endpoints</h2>
 
       <div class="endpoint">
         <span class="method post">POST</span>
@@ -492,7 +428,7 @@ mongoose.connect("mongodb://localhost:27017/myFlixDB", {
 
         <h4>Example Request:</h4>
         <pre>
-post('http://localhost:8080/users', {
+fetch('http://localhost:8080/users', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -541,7 +477,10 @@ post('http://localhost:8080/users', {
         </table>
 
         <h4>Request Body:</h4>
-        <p>Any of the user fields to be updated (Username, Password, Email, Birthday)</p>
+        <p>
+          Any of the user fields to be updated (Username, Password, Email,
+          Birthday)
+        </p>
 
         <h4>Example Request:</h4>
         <pre>
@@ -581,7 +520,10 @@ fetch('http://localhost:8080/users/francescam', {
 
       <div class="endpoint">
         <span class="method post">POST</span>
-        <span><code>/users/:username/movies/:movieId</code> - Add movie to favorites</span>
+        <span
+          ><code>/users/:username/movies/:movieId</code> - Add movie to
+          favorites</span
+        >
         <p>Adds a movie to a user's list of favorite movies.</p>
 
         <h4>Parameters:</h4>
@@ -605,13 +547,19 @@ fetch('http://localhost:8080/users/francescam', {
 
         <h4>Success Response (200 OK)</h4>
         <div class="response">
-          <p>Returns updated user document with the new movie in FavoriteMovies array</p>
+          <p>
+            Returns updated user document with the new movie in FavoriteMovies
+            array
+          </p>
         </div>
       </div>
 
       <div class="endpoint">
         <span class="method delete">DELETE</span>
-        <span><code>/users/:username/movies/:movieId</code> - Remove movie from favorites</span>
+        <span
+          ><code>/users/:username/movies/:movieId</code> - Remove movie from
+          favorites</span
+        >
         <p>Removes a movie from a user's list of favorite movies.</p>
 
         <h4>Parameters:</h4>
@@ -635,9 +583,12 @@ fetch('http://localhost:8080/users/francescam', {
 
         <h4>Example Request:</h4>
         <pre>
-fetch('http://localhost:8080/users/francescam/movies/684026918dda30a4fe6c4bd8
-_id": "685418d7e4815258052724c1" {
-  method: 'delete',
+fetch('http://localhost:8080/users/francescam/movies/684026918dda30a4fe6c4bd8', {
+  method: 'DELETE'
+})
+.then(response => response.json())
+.then(data => console.log(data));</pre
+        >
 
         <h4>Success Response (200 OK)</h4>
         <div class="response">
@@ -678,14 +629,18 @@ _id": "685418d7e4815258052724c1" {
 
         <h4>Example Request:</h4>
         <pre>
-          fetch('http://localhost:8080/users/francescam',)
-        </pre>
+fetch('http://localhost:8080/users/francescam', {
+  method: 'DELETE'
+})
+.then(response => response.json())
+.then(data => console.log(data));</pre
+        >
 
         <h4>Success Response (200 OK)</h4>
         <div class="response">
           <pre>
 {
-  "message": "User francescam delted successfully."
+  "message": "User francescam deleted successfully."
 }</pre
           >
         </div>

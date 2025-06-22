@@ -87,21 +87,6 @@ app.get("/genres/:name", async (req, res) => {
   }
 });
 
-// Get genre by name
-app.get("/genres/:name", async (req, res) => {
-  try {
-    const movie = await Movies.findOne({ "Genre.Name": req.params.name });
-    if (!movie) {
-      return res.status(404).send("Genre not found");
-    }
-    const genre = movie.Genre;
-    res.status(200).json(genre);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error: " + error);
-  }
-});
-
 // Get director by name
 app.get("/directors/:name", async (req, res) => {
   try {
