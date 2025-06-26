@@ -24,7 +24,7 @@ const Users = Models.User;
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb://localhost:27017/myFlixDB", {
+  .connect(process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
