@@ -6,14 +6,13 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Models = require("./models.js");
 const { check, validationResult } = require('express-validator');
+
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
-const cors = require('cors');
-app.use(cors());
 
 const passport = require("passport");
 let auth = require("./auth")(app);
@@ -22,14 +21,8 @@ require("./passport"); // Import the passport configuration
 const Movies = Models.Movie;
 const Users = Models.User;
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.CONNECTION_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Could not connect to MongoDB", err));
+// mongoose.connect
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Root route
 app.get("/", (req, res) => {
@@ -143,14 +136,11 @@ app.get(
   async (req, res) => {
     try {
       const actors = await Movies.aggregate([
-        { $unwind: "$Actors" }, // Make sure this matches your schema field name exactly
+        { $unwind: "$Actors" },
         { $group: { _id: "$Actors" } },
-        { $sort: { _id: 1 } }, // Optional: sort actors alphabetically
+        { $sort: { _id: 1 } },
       ]);
-
-      // Extract just the actor names from the aggregation result
       const actorNames = actors.map((a) => a._id);
-
       res.status(200).json(actorNames);
     } catch (error) {
       console.error("Error fetching actors:", error);
@@ -166,21 +156,17 @@ app.get(
   async (req, res) => {
     try {
       const actresses = await Movies.aggregate([
-        { $unwind: "$actresses" }, // Split the actresses array into separate documents
+        { $unwind: "$actresses" },
         {
           $group: {
             _id: "$actresses",
-            count: { $sum: 1 }, // Optional: count how many movies each actress appears in
+            count: { $sum: 1 },
           },
         },
-        { $sort: { _id: 1 } }, // Sort alphabetically by actress name
+        { $sort: { _id: 1 } },
       ]);
-
-      // Return just the names (and counts if needed)
       res.status(200).json({
         actresses: actresses.map((a) => a._id),
-        // If you want to include counts:
-        // actresses: actresses.map(a => ({ name: a._id, count: a.count }))
       });
     } catch (error) {
       console.error("Error fetching actresses:", error);
@@ -191,6 +177,7 @@ app.get(
     }
   }
 );
+
 // === USER ROUTES ===
 
 // Get all users (should be protected and restricted to admins)
@@ -209,19 +196,13 @@ app.get(
 );
 
 app.post('/users',
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
   [
-    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username is required').isLength({ min: 5 }),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ], async (req, res) => {
 
-  // check the validation object for errors
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -229,10 +210,9 @@ app.post('/users',
     }
 
     let hashedPassword = Users.hashPassword(req.body.Password);
-    await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+    await Users.findOne({ Username: req.body.Username })
       .then((user) => {
         if (user) {
-          //If the user is found, send a response that it already exists
           return res.status(400).send(req.body.Username + ' already exists');
         } else {
           Users
@@ -255,16 +235,13 @@ app.post('/users',
       });
   });
 
-
 app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    // CONDITION TO CHECK ADDED HERE
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
-    // CONDITION ENDS
     await Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
@@ -276,7 +253,7 @@ app.put(
         },
       },
       { new: true }
-    ) // This line makes sure that the updated document is returned
+    )
       .then((updatedUser) => {
         res.json(updatedUser);
       })
@@ -293,11 +270,9 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      // Verify the user is accessing their own account or is admin
       if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).send("Not authorized to view this user");
       }
-
       const user = await Users.findOne({ Username: req.params.username });
       if (!user) {
         return res.status(404).send("User not found");
@@ -316,19 +291,16 @@ app.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      // Verify the user is updating their own favorites
       if (req.user.Username !== req.params.username) {
         return res
           .status(403)
           .send("Not authorized to update this user's favorites");
       }
-
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.username },
         { $addToSet: { FavoriteMovies: req.params.movieId } },
         { new: true }
       );
-
       if (!updatedUser) {
         return res.status(404).send("User not found");
       }
@@ -346,19 +318,16 @@ app.delete(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      // Verify the user is updating their own favorites
       if (req.user.Username !== req.params.username) {
         return res
           .status(403)
           .send("Not authorized to update this user's favorites");
       }
-
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.username },
         { $pull: { FavoriteMovies: req.params.movieId } },
         { new: true }
       );
-
       if (!updatedUser) {
         return res.status(404).send("User not found");
       }
@@ -376,11 +345,9 @@ app.delete(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      // Verify the user is deleting their own account or is admin
       if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).send("Not authorized to delete this user");
       }
-
       const user = await Users.findOneAndDelete({
         Username: req.params.username,
       });
@@ -403,6 +370,6 @@ app.use((err, req, res, next) => {
 
 // Start server
 const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on port ' + port);
 });
