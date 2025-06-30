@@ -5,6 +5,7 @@ const uuid = require("uuid");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Models = require("./models.js");
+const cors = require("cors");
 const { check, validationResult } = require('express-validator');
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
+app.use(cors()); // Enable cors for all routes
 
 const passport = require("passport");
 let auth = require("./auth")(app);
