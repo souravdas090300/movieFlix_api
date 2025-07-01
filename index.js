@@ -51,8 +51,15 @@ app.get(
 // Get movie by title
 app.get(
   "/movies/:title",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('title', 'Title is required').notEmpty()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       const movie = await Movies.findOne({ Title: req.params.title });
       if (!movie) {
@@ -91,8 +98,15 @@ app.get(
 // Get genre by name
 app.get(
   "/genres/:name",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('name', 'Genre name is required').notEmpty()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       const movie = await Movies.findOne({ "Genre.Name": req.params.name });
       if (!movie) {
@@ -110,8 +124,15 @@ app.get(
 // Get director by name
 app.get(
   "/directors/:name",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('name', 'Director name is required').notEmpty()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       const movie = await Movies.findOne({ "Director.Name": req.params.name });
       if (!movie) {
@@ -239,8 +260,18 @@ app.post('/users',
 
 app.put(
   "/users/:Username",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
@@ -269,8 +300,15 @@ app.put(
 // Get user by username
 app.get(
   "/users/:username",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).send("Not authorized to view this user");
@@ -290,8 +328,16 @@ app.get(
 // Add movie to favorites
 app.post(
   "/users/:username/movies/:movieId",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty(),
+    check('movieId', 'Invalid movie ID').isMongoId()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       if (req.user.Username !== req.params.username) {
         return res
@@ -317,8 +363,16 @@ app.post(
 // Remove movie from favorites
 app.delete(
   "/users/:username/movies/:movieId",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty(),
+    check('movieId', 'Invalid movie ID').isMongoId()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       if (req.user.Username !== req.params.username) {
         return res
@@ -344,8 +398,15 @@ app.delete(
 // Delete user
 app.delete(
   "/users/:username",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty()
+  ],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     try {
       if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).send("Not authorized to delete this user");
