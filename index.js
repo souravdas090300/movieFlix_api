@@ -264,40 +264,56 @@ app.put(
     passport.authenticate("jwt", { session: false }),
     check('Username', 'Username is required').isLength({ min: 5 }),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Enter your current password').not().isEmpty(),
+    check('Password', 'Password is required - enter your current password if you don\'t want to change it').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ],
   async (req, res) => {
+    // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
+    
+    // Check permissions
     if (req.user.Username !== req.params.Username) {
-      return res.status(400).send("Permission denied");
+      return res.status(403).send("Permission denied");
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    await Users.findOneAndUpdate(
-      { Username: req.params.Username },
-      {
-        $set: {
-          Username: req.body.Username,
-          Password: hashedPassword,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
+    try {
+      // Find the existing user
+      const existingUser = await Users.findOne({ Username: req.params.Username });
+      if (!existingUser) {
+        return res.status(404).send("User not found");
+      }
+
+      // If the password is being changed (not matching the existing one)
+      let hashedPassword = existingUser.Password;
+      if (!Users.validatePassword(req.body.Password, existingUser.Password)) {
+        hashedPassword = Users.hashPassword(req.body.Password);
+      }
+
+      // Update user
+      const updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        {
+          $set: {
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          },
         },
-      },
-      { new: true }
-    )
-      .then((updatedUser) => {
-        res.json(updatedUser);
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send("Error: " + err);
-      });
+        { new: true }
+      );
+
+      res.json(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err.message);
+    }
   }
 );
+
 
 // Get user by username
 app.get(
