@@ -264,7 +264,7 @@ app.put(
     passport.authenticate("jwt", { session: false }),
     check('Username', 'Username is required').isLength({ min: 5 }),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
+    check('Password', 'Enter your current password').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ],
   async (req, res) => {
@@ -275,12 +275,14 @@ app.put(
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
     await Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
         $set: {
           Username: req.body.Username,
-          Password: req.body.Password,
+          Password: hashedPassword,
           Email: req.body.Email,
           Birthday: req.body.Birthday,
         },
