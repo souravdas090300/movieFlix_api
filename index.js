@@ -16,8 +16,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
-app.use(cors()); // Enable cors for all routes
-
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -271,8 +269,6 @@ app.post('/users',
       });
   });
 
-  // ... (previous imports and setup remain the same)
-
 app.put(
   "/users/:Username",
   [
@@ -288,7 +284,7 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
     if (req.user.Username !== req.params.Username) {
-      return res.status(400).send("Permission denied");
+      return res.status(400).json({ error: "Permission denied" });
     }
 
     let hashedPassword = Users.hashPassword(req.body.Password);
@@ -309,7 +305,7 @@ app.put(
       })
       .catch((err) => {
         console.log(err);
-        res.status(500).send("Error: " + err);
+        res.status(500).json({ error: "Error: " + err });
       });
   }
 );
@@ -427,18 +423,18 @@ app.delete(
     }
     try {
       if (req.user.Username !== req.params.username && !req.user.isAdmin) {
-        return res.status(403).send("Not authorized to delete this user");
+        return res.status(403).json({ error: "Not authorized to delete this user" });
       }
       const user = await Users.findOneAndDelete({
         Username: req.params.username,
       });
       if (!user) {
-        return res.status(404).send("User not found");
+        return res.status(404).json({ error: "User not found" });
       }
-      res.status(200).send(req.params.username + " was deleted.");
+      res.status(200).json({ message: req.params.username + " was deleted." });
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
