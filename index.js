@@ -249,7 +249,7 @@ app.post('/users',
     await Users.findOne({ Username: req.body.Username })
       .then((user) => {
         if (user) {
-          return res.status(400).send(req.body.Username + ' already exists');
+          return res.status(400).json({ error: req.body.Username + ' already exists' });
         } else {
           Users
             .create({
@@ -261,13 +261,13 @@ app.post('/users',
             .then((user) => { res.status(201).json(user) })
             .catch((error) => {
               console.error(error);
-              res.status(500).send('Error: ' + error);
+              res.status(500).json({ error: 'Error: ' + error });
             });
         }
       })
       .catch((error) => {
         console.error(error);
-        res.status(500).send('Error: ' + error);
+        res.status(500).json({ error: 'Error: ' + error });
       });
   });
 
@@ -446,7 +446,7 @@ app.delete(
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(500).json({ error: "Something broke!" });
 });
 
 // Start server
