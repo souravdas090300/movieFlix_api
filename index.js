@@ -658,6 +658,176 @@ app.get(
   }
 );
 
+// Auto-suggestions endpoint for search-as-you-type functionality
+app.get(
+  "/search/suggestions",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty().isLength({ min: 1, max: 50 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const limit = parseInt(req.query.limit) || 10; // Default to 10 suggestions
+      const searchRegex = new RegExp(searchQuery, 'i');
+      
+      // Get movie title suggestions
+      const movieTitles = await Movies.find(
+        { Title: searchRegex },
+        { Title: 1, _id: 0 }
+      ).limit(limit);
+      
+      // Get genre suggestions
+      const genres = await Movies.aggregate([
+        { $match: { "Genre.Name": searchRegex } },
+        { $group: { _id: "$Genre.Name" } },
+        { $limit: 5 },
+        { $project: { _id: 0, name: "$_id" } }
+      ]);
+      
+      // Get director suggestions
+      const directors = await Movies.aggregate([
+        { $match: { "Director.Name": searchRegex } },
+        { $group: { _id: "$Director.Name" } },
+        { $limit: 5 },
+        { $project: { _id: 0, name: "$_id" } }
+      ]);
+      
+      // Get actor suggestions
+      const actors = await Movies.aggregate([
+        { $unwind: "$Actors" },
+        { $match: { "Actors": searchRegex } },
+        { $group: { _id: "$Actors" } },
+        { $limit: 5 },
+        { $project: { _id: 0, name: "$_id" } }
+      ]);
+      
+      res.status(200).json({
+        query: searchQuery,
+        suggestions: {
+          movies: movieTitles.map(m => ({ type: 'movie', value: m.Title })),
+          genres: genres.map(g => ({ type: 'genre', value: g.name })),
+          directors: directors.map(d => ({ type: 'director', value: d.name })),
+          actors: actors.map(a => ({ type: 'actor', value: a.name }))
+        }
+      });
+    } catch (error) {
+      console.error("Error in suggestions:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Quick search endpoint optimized for fast results (limited fields)
+app.get(
+  "/search/quick",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty().isLength({ min: 1 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const limit = parseInt(req.query.limit) || 20;
+      const searchRegex = new RegExp(searchQuery, 'i');
+      
+      // Return only essential fields for quick display
+      const movies = await Movies.find({
+        $or: [
+          { Title: searchRegex },
+          { "Genre.Name": searchRegex },
+          { "Director.Name": searchRegex },
+          { Actors: { $in: [searchRegex] } }
+        ]
+      }, {
+        Title: 1,
+        "Genre.Name": 1,
+        "Director.Name": 1,
+        Year: 1,
+        ImagePath: 1
+      }).limit(limit);
+      
+      res.status(200).json({
+        query: searchQuery,
+        results: movies,
+        count: movies.length,
+        isQuickSearch: true
+      });
+    } catch (error) {
+      console.error("Error in quick search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Search with pagination for better performance
+app.get(
+  "/search/paginated",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+      const searchRegex = new RegExp(searchQuery, 'i');
+      
+      const searchCriteria = {
+        $or: [
+          { Title: searchRegex },
+          { Description: searchRegex },
+          { "Genre.Name": searchRegex },
+          { "Director.Name": searchRegex },
+          { Actors: { $in: [searchRegex] } }
+        ]
+      };
+      
+      // Get total count for pagination
+      const totalResults = await Movies.countDocuments(searchCriteria);
+      const totalPages = Math.ceil(totalResults / limit);
+      
+      // Get paginated results
+      const movies = await Movies.find(searchCriteria)
+        .skip(skip)
+        .limit(limit);
+      
+      res.status(200).json({
+        query: searchQuery,
+        results: movies,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalResults: totalResults,
+          resultsPerPage: limit,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1
+        }
+      });
+    } catch (error) {
+      console.error("Error in paginated search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
