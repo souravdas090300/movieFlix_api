@@ -8,7 +8,13 @@ const Models = require("./models.js");
 const cors = require("cors");
 const { check, validationResult } = require('express-validator');
 
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://my-flix-clients.netlify.app/'];
+let allowedOrigins = [
+  'http://localhost:8080', 
+  'http://testsite.com', 
+  'http://localhost:1234', 
+  'https://my-flix-clients.netlify.app',
+  'https://my-flix-clients.netlify.app/'
+];
 
 const app = express();
 
@@ -16,11 +22,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
+app.use(cors()); // Enable CORS for all origins initially
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn't found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn\'t allow access from origin ' + origin;
       return callback(new Error(message), false);
     }
     return callback(null, true);
@@ -54,7 +62,7 @@ app.get(
       res.status(200).json(movies);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -74,12 +82,12 @@ app.get(
     try {
       const movie = await Movies.findOne({ Title: req.params.title });
       if (!movie) {
-        return res.status(404).send("Movie not found");
+        return res.status(404).json({ error: "Movie not found" });
       }
       res.status(200).json(movie);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -101,7 +109,7 @@ app.get(
       res.status(200).json(genres);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -121,13 +129,13 @@ app.get(
     try {
       const movie = await Movies.findOne({ "Genre.Name": req.params.name });
       if (!movie) {
-        return res.status(404).send("Genre not found");
+        return res.status(404).json({ error: "Genre not found" });
       }
       const genre = movie.Genre;
       res.status(200).json(genre);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -147,7 +155,7 @@ app.get(
     try {
       const movie = await Movies.findOne({ "Director.Name": req.params.name });
       if (!movie) {
-        return res.status(404).send("Director not found");
+        return res.status(404).json({ error: "Director not found" });
       }
       res.status(200).json({
         name: movie.Director.Name,
@@ -158,7 +166,7 @@ app.get(
       });
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -224,7 +232,7 @@ app.get(
       res.status(200).json(users);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -325,16 +333,16 @@ app.get(
     }
     try {
       if (req.user.Username !== req.params.username && !req.user.isAdmin) {
-        return res.status(403).send("Not authorized to view this user");
+        return res.status(403).json({ error: "Not authorized to view this user" });
       }
       const user = await Users.findOne({ Username: req.params.username });
       if (!user) {
-        return res.status(404).send("User not found");
+        return res.status(404).json({ error: "User not found" });
       }
       res.status(200).json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -356,7 +364,7 @@ app.post(
       if (req.user.Username !== req.params.username) {
         return res
           .status(403)
-          .send("Not authorized to update this user's favorites");
+          .json({ error: "Not authorized to update this user's favorites" });
       }
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.username },
@@ -364,12 +372,12 @@ app.post(
         { new: true }
       );
       if (!updatedUser) {
-        return res.status(404).send("User not found");
+        return res.status(404).json({ error: "User not found" });
       }
       res.status(200).json(updatedUser);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
@@ -391,7 +399,7 @@ app.delete(
       if (req.user.Username !== req.params.username) {
         return res
           .status(403)
-          .send("Not authorized to update this user's favorites");
+          .json({ error: "Not authorized to update this user's favorites" });
       }
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.username },
@@ -399,12 +407,12 @@ app.delete(
         { new: true }
       );
       if (!updatedUser) {
-        return res.status(404).send("User not found");
+        return res.status(404).json({ error: "User not found" });
       }
       res.status(200).json(updatedUser);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error: " + error);
+      res.status(500).json({ error: "Error: " + error });
     }
   }
 );
