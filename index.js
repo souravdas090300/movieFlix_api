@@ -22,7 +22,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
-app.use(cors()); // Enable CORS for all origins initially
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -442,6 +441,218 @@ app.delete(
       res.status(200).json({ message: req.params.username + " was deleted." });
     } catch (error) {
       console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// === SEARCH ROUTES ===
+
+// General search endpoint - searches across multiple fields
+app.get(
+  "/search",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty().isLength({ min: 1 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const searchRegex = new RegExp(searchQuery, 'i'); // Case-insensitive search
+      
+      const movies = await Movies.find({
+        $or: [
+          { Title: searchRegex },
+          { Description: searchRegex },
+          { "Genre.Name": searchRegex },
+          { "Director.Name": searchRegex },
+          { Actors: { $in: [searchRegex] } }
+        ]
+      });
+      
+      res.status(200).json({
+        query: searchQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Search movies by title
+app.get(
+  "/search/movies",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('title', 'Title search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const titleQuery = req.query.title;
+      const searchRegex = new RegExp(titleQuery, 'i');
+      
+      const movies = await Movies.find({ Title: searchRegex });
+      
+      res.status(200).json({
+        query: titleQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in movie title search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Search movies by genre
+app.get(
+  "/search/genres",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('genre', 'Genre search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const genreQuery = req.query.genre;
+      const searchRegex = new RegExp(genreQuery, 'i');
+      
+      const movies = await Movies.find({ "Genre.Name": searchRegex });
+      
+      res.status(200).json({
+        query: genreQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in genre search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Search movies by director
+app.get(
+  "/search/directors",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('director', 'Director search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const directorQuery = req.query.director;
+      const searchRegex = new RegExp(directorQuery, 'i');
+      
+      const movies = await Movies.find({ "Director.Name": searchRegex });
+      
+      res.status(200).json({
+        query: directorQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in director search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Search movies by actor
+app.get(
+  "/search/actors",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('actor', 'Actor search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const actorQuery = req.query.actor;
+      const searchRegex = new RegExp(actorQuery, 'i');
+      
+      const movies = await Movies.find({ Actors: { $in: [searchRegex] } });
+      
+      res.status(200).json({
+        query: actorQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in actor search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Advanced search with multiple filters
+app.get(
+  "/search/advanced",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { title, genre, director, actor, year } = req.query;
+      let searchCriteria = {};
+      
+      if (title) {
+        searchCriteria.Title = new RegExp(title, 'i');
+      }
+      
+      if (genre) {
+        searchCriteria["Genre.Name"] = new RegExp(genre, 'i');
+      }
+      
+      if (director) {
+        searchCriteria["Director.Name"] = new RegExp(director, 'i');
+      }
+      
+      if (actor) {
+        searchCriteria.Actors = { $in: [new RegExp(actor, 'i')] };
+      }
+      
+      if (year) {
+        searchCriteria.Year = year;
+      }
+      
+      if (Object.keys(searchCriteria).length === 0) {
+        return res.status(400).json({ error: "At least one search parameter is required" });
+      }
+      
+      const movies = await Movies.find(searchCriteria);
+      
+      res.status(200).json({
+        filters: req.query,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in advanced search:", error);
       res.status(500).json({ error: "Error: " + error });
     }
   }
