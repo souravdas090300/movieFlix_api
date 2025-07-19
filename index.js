@@ -91,6 +91,31 @@ app.get(
   }
 );
 
+// Get movie by ID
+app.get(
+  "/movies/id/:id",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('id', 'Invalid movie ID').isMongoId()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movie = await Movies.findById(req.params.id);
+      if (!movie) {
+        return res.status(404).json({ error: "Movie not found" });
+      }
+      res.status(200).json(movie);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
 // Get all genres
 app.get(
   "/genres",
@@ -197,10 +222,10 @@ app.get(
   async (req, res) => {
     try {
       const actresses = await Movies.aggregate([
-        { $unwind: "$actresses" },
+        { $unwind: "$Actresses" }, // Fixed: should be "Actresses" not "actresses"
         {
           $group: {
-            _id: "$actresses",
+            _id: "$Actresses",
             count: { $sum: 1 },
           },
         },
@@ -346,6 +371,38 @@ app.get(
   }
 );
 
+// Get user's favorite movies with full movie details
+app.get(
+  "/users/:username/favorites",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      if (req.user.Username !== req.params.username && !req.user.isAdmin) {
+        return res.status(403).json({ error: "Not authorized to view this user's favorites" });
+      }
+      const user = await Users.findOne({ Username: req.params.username }).populate('FavoriteMovies');
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json({
+        username: user.Username,
+        favoriteMovies: user.FavoriteMovies,
+        count: user.FavoriteMovies.length
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
 // Add movie to favorites
 app.post(
   "/users/:username/movies/:movieId",
@@ -447,6 +504,43 @@ app.delete(
 );
 
 // === SEARCH ROUTES ===
+
+// Get featured movies (commonly needed for homepage)
+app.get(
+  "/movies/featured",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const featuredMovies = await Movies.find({ Featured: true });
+      res.status(200).json(featuredMovies);
+    } catch (error) {
+      console.error("Error fetching featured movies:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Get movies by genre (commonly needed for filtering)
+app.get(
+  "/movies/genre/:genre",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('genre', 'Genre is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movies = await Movies.find({ "Genre.Name": new RegExp(req.params.genre, 'i') });
+      res.status(200).json(movies);
+    } catch (error) {
+      console.error("Error fetching movies by genre:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
 
 // General search endpoint - searches across multiple fields
 app.get(
