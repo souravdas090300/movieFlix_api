@@ -9,6 +9,7 @@ const cors = require("cors");
 const { check, validationResult } = require('express-validator');
 
 let allowedOrigins = [
+  'http://localhost:4200',
   'http://localhost:8080', 
   'http://testsite.com', 
   'http://localhost:1234', 
@@ -933,3 +934,4 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on port ' + port);
 });
+
