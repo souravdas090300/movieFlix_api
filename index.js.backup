@@ -14,9 +14,7 @@ let allowedOrigins = [
   'http://testsite.com', 
   'http://localhost:1234', 
   'https://my-flix-clients.netlify.app',
-  'https://my-flix-clients.netlify.app/',
-  'https://souravdas090300.github.io',
-  'https://souravdas090300.github.io/myFlix-Angular-client'
+  'https://my-flix-clients.netlify.app/'
 ];
 
 const app = express();
@@ -936,5 +934,4 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on port ' + port);
 });
-
 
