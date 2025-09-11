@@ -1,39 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: index.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: index.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @fileoverview myFlix API - A RESTful API for movie information and user management
- * @description This API provides endpoints for managing movies, users, and user favorites.
- * It includes authentication, authorization, and data validation features.
- * @author Sourav Das
- * @version 1.0.0
- */
-
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -44,25 +8,15 @@ const Models = require("./models.js");
 const cors = require("cors");
 const { check, validationResult } = require('express-validator');
 
-/**
- * List of allowed origins for CORS policy
- * @type {string[]}
- */
 let allowedOrigins = [
   'http://localhost:4200',
   'http://localhost:8080', 
   'http://testsite.com', 
   'http://localhost:1234', 
   'https://my-flix-clients.netlify.app',
-  'https://my-flix-clients.netlify.app/',
-  'https://souravdas090300.github.io',
-  'https://souravdas090300.github.io/myFlix-Angular-client'
+  'https://my-flix-clients.netlify.app/'
 ];
 
-/**
- * Express application instance
- * @type {Express}
- */
 const app = express();
 
 app.use(bodyParser.json());
@@ -70,10 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
 app.use(express.static("public"));
 
-/**
- * Configure CORS (Cross-Origin Resource Sharing)
- * Allows requests only from specified origins
- */
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -89,104 +39,20 @@ const passport = require("passport");
 let auth = require("./auth")(app);
 require("./passport"); // Import the passport configuration
 
-/**
- * Movie model from mongoose schemas
- * @type {mongoose.Model}
- */
 const Movies = Models.Movie;
-
-/**
- * User model from mongoose schemas
- * @type {mongoose.Model}
- */
 const Users = Models.User;
 
-/**
- * Connect to MongoDB database using mongoose
- * Uses CONNECTION_URI environment variable
- */
+// mongoose.connect
 mongoose.connect(process.env.CONNECTION_URI);
 
-/**
- * @api {get} / Welcome Message
- * @apiName GetWelcome
- * @apiGroup General
- * @apiDescription Returns a welcome message for the myFlix API
- * 
- * @apiSuccess {String} message Welcome message with usage instructions
- * 
- * @apiSuccessExample {text} Success-Response:
- *     HTTP/1.1 200 OK
- *     Welcome to myFlix API! Use /movies for movies or /users for user operations.
- * 
- * @example
- * // GET /
- * curl -X GET "https://movie-flix.herokuapp.com/"
- */
+// Root route
 app.get("/", (req, res) => {
   res.send(
     "Welcome to myFlix API! Use /movies for movies or /users for user operations."
   );
 });
 
-/**
- * @api {get} /movies Get All Movies
- * @apiName GetMovies
- * @apiGroup Movies
- * @apiDescription Retrieve a list of all movies in the database
- * @apiPermission authenticated user
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object[]} movies Array of movie objects
- * @apiSuccess {String} movies._id Movie ID
- * @apiSuccess {String} movies.Title Movie title
- * @apiSuccess {String} movies.Description Movie description
- * @apiSuccess {Object} movies.Genre Genre information
- * @apiSuccess {String} movies.Genre.Name Genre name
- * @apiSuccess {String} movies.Genre.Description Genre description
- * @apiSuccess {Object} movies.Director Director information
- * @apiSuccess {String} movies.Director.Name Director name
- * @apiSuccess {String} movies.Director.Bio Director biography
- * @apiSuccess {String[]} movies.Actors Array of actor names
- * @apiSuccess {String} movies.ImagePath Movie poster image URL
- * @apiSuccess {Boolean} movies.Featured Whether movie is featured
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     [
- *       {
- *         "_id": "507f1f77bcf86cd799439011",
- *         "Title": "The Shawshank Redemption",
- *         "Description": "Two imprisoned men bond over years...",
- *         "Genre": {
- *           "Name": "Drama",
- *           "Description": "Drama genre description"
- *         },
- *         "Director": {
- *           "Name": "Frank Darabont",
- *           "Bio": "Director biography"
- *         },
- *         "Actors": ["Tim Robbins", "Morgan Freeman"],
- *         "ImagePath": "shawshank.png",
- *         "Featured": true
- *       }
- *     ]
- * 
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 401 Unauthorized
- *     {
- *       "error": "Unauthorized"
- *     }
- * 
- * @example
- * // GET /movies
- * curl -X GET "https://movie-flix.herokuapp.com/movies" \
- *      -H "Authorization: Bearer your-jwt-token"
- */
+// Get all movies
 app.get(
   "/movies",
   passport.authenticate("jwt", { session: false }),
@@ -201,59 +67,7 @@ app.get(
   }
 );
 
-/**
- * @api {get} /movies/:title Get Movie by Title
- * @apiName GetMovieByTitle
- * @apiGroup Movies
- * @apiDescription Retrieve detailed information about a specific movie by its title
- * @apiPermission authenticated user
- * 
- * @apiParam {String} title Movie title (case-sensitive)
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object} movie Movie object
- * @apiSuccess {String} movie._id Movie ID
- * @apiSuccess {String} movie.Title Movie title
- * @apiSuccess {String} movie.Description Movie description
- * @apiSuccess {Object} movie.Genre Genre information
- * @apiSuccess {String} movie.Genre.Name Genre name
- * @apiSuccess {String} movie.Genre.Description Genre description
- * @apiSuccess {Object} movie.Director Director information
- * @apiSuccess {String} movie.Director.Name Director name
- * @apiSuccess {String} movie.Director.Bio Director biography
- * @apiSuccess {String[]} movie.Actors Array of actor names
- * @apiSuccess {String} movie.ImagePath Movie poster image URL
- * @apiSuccess {Boolean} movie.Featured Whether movie is featured
- * 
- * @apiError (400) BadRequest Invalid title parameter
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (404) NotFound Movie not found
- * @apiError (422) ValidationError Title validation failed
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Movie Not Found:
- *     HTTP/1.1 404 Not Found
- *     {
- *       "error": "Movie not found"
- *     }
- * 
- * @apiErrorExample {json} Validation Error:
- *     HTTP/1.1 422 Unprocessable Entity
- *     {
- *       "errors": [
- *         {
- *           "msg": "Title is required",
- *           "param": "title"
- *         }
- *       ]
- *     }
- * 
- * @example
- * // GET /movies/The Shawshank Redemption
- * curl -X GET "https://movie-flix.herokuapp.com/movies/The%20Shawshank%20Redemption" \
- *      -H "Authorization: Bearer your-jwt-token"
- */
+// Get movie by title
 app.get(
   "/movies/:title",
   [
@@ -325,44 +139,7 @@ app.get(
   }
 );
 
-/**
- * @api {get} /genres/:name Get Genre by Name
- * @apiName GetGenreByName
- * @apiGroup Genres
- * @apiDescription Retrieve detailed information about a specific genre
- * @apiPermission authenticated user
- * 
- * @apiParam {String} name Genre name (case-sensitive)
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object} genre Genre information
- * @apiSuccess {String} genre.Name Genre name
- * @apiSuccess {String} genre.Description Genre description
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "Name": "Drama",
- *       "Description": "Drama is a category of narrative fiction..."
- *     }
- * 
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (404) NotFound Genre not found
- * @apiError (422) ValidationError Genre name validation failed
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Genre Not Found:
- *     HTTP/1.1 404 Not Found
- *     {
- *       "error": "Genre not found"
- *     }
- * 
- * @example
- * // GET /genres/Drama
- * curl -X GET "https://movie-flix.herokuapp.com/genres/Drama" \
- *      -H "Authorization: Bearer your-jwt-token"
- */
+// Get genre by name
 app.get(
   "/genres/:name",
   [
@@ -485,71 +262,6 @@ app.get(
   }
 );
 
-/**
- * @api {post} /users Register New User
- * @apiName RegisterUser
- * @apiGroup Users
- * @apiDescription Register a new user account
- * @apiPermission none
- * 
- * @apiBody {String} Username Username (minimum 5 characters, alphanumeric only)
- * @apiBody {String} Password User password (required)
- * @apiBody {String} Email User email address (must be valid email format)
- * @apiBody {String} [Birthday] User birthday (optional)
- * 
- * @apiSuccess {Object} user Created user object
- * @apiSuccess {String} user._id User ID
- * @apiSuccess {String} user.Username Username
- * @apiSuccess {String} user.Email User email
- * @apiSuccess {String} user.Birthday User birthday
- * @apiSuccess {String[]} user.FavoriteMovies Array of favorite movie IDs (empty for new users)
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 201 Created
- *     {
- *       "_id": "507f1f77bcf86cd799439011",
- *       "Username": "johndoe",
- *       "Email": "john@example.com",
- *       "Birthday": "1990-01-01",
- *       "FavoriteMovies": []
- *     }
- * 
- * @apiError (400) BadRequest Username already exists
- * @apiError (422) ValidationError Input validation failed
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Username Exists:
- *     HTTP/1.1 400 Bad Request
- *     {
- *       "error": "johndoe already exists"
- *     }
- * 
- * @apiErrorExample {json} Validation Error:
- *     HTTP/1.1 422 Unprocessable Entity
- *     {
- *       "errors": [
- *         {
- *           "msg": "Username is required",
- *           "param": "Username"
- *         },
- *         {
- *           "msg": "Email does not appear to be valid",
- *           "param": "Email"
- *         }
- *       ]
- *     }
- * 
- * @example
- * // POST /users
- * curl -X POST "https://movie-flix.herokuapp.com/users" \
- *      -H "Content-Type: application/json" \
- *      -d '{
- *        "Username": "johndoe",
- *        "Password": "securePassword123",
- *        "Email": "john@example.com",
- *        "Birthday": "1990-01-01"
- *      }'
- */
 app.post('/users',
   [
     check('Username', 'Username is required').isLength({ min: 5 }),
@@ -645,7 +357,7 @@ app.get(
       return res.status(422).json({ errors: errors.array() });
     }
     try {
-      if (req.user.Username !== req.params.username &amp;&amp; !req.user.isAdmin) {
+      if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).json({ error: "Not authorized to view this user" });
       }
       const user = await Users.findOne({ Username: req.params.username });
@@ -673,7 +385,7 @@ app.get(
       return res.status(422).json({ errors: errors.array() });
     }
     try {
-      if (req.user.Username !== req.params.username &amp;&amp; !req.user.isAdmin) {
+      if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).json({ error: "Not authorized to view this user's favorites" });
       }
       const user = await Users.findOne({ Username: req.params.username }).populate('FavoriteMovies');
@@ -692,50 +404,7 @@ app.get(
   }
 );
 
-/**
- * @api {post} /users/:username/movies/:movieId Add Movie to Favorites
- * @apiName AddToFavorites
- * @apiGroup Users
- * @apiDescription Add a movie to user's list of favorite movies
- * @apiPermission authenticated user (own account only)
- * 
- * @apiParam {String} username Username of the user
- * @apiParam {String} movieId MongoDB ObjectId of the movie to add
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object} user Updated user object
- * @apiSuccess {String} user._id User ID
- * @apiSuccess {String} user.Username Username
- * @apiSuccess {String} user.Email User email
- * @apiSuccess {String[]} user.FavoriteMovies Array of favorite movie IDs
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "_id": "507f1f77bcf86cd799439011",
- *       "Username": "johndoe",
- *       "Email": "john@example.com",
- *       "FavoriteMovies": ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]
- *     }
- * 
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (403) Forbidden Not authorized to update this user's favorites
- * @apiError (404) NotFound User not found
- * @apiError (422) ValidationError Invalid username or movieId
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Authorization Error:
- *     HTTP/1.1 403 Forbidden
- *     {
- *       "error": "Not authorized to update this user's favorites"
- *     }
- * 
- * @example
- * // POST /users/johndoe/movies/507f1f77bcf86cd799439012
- * curl -X POST "https://movie-flix.herokuapp.com/users/johndoe/movies/507f1f77bcf86cd799439012" \
- *      -H "Authorization: Bearer your-jwt-token"
- */
+// Add movie to favorites
 app.post(
   "/users/:username/movies/:movieId",
   [
@@ -818,7 +487,7 @@ app.delete(
       return res.status(422).json({ errors: errors.array() });
     }
     try {
-      if (req.user.Username !== req.params.username &amp;&amp; !req.user.isAdmin) {
+      if (req.user.Username !== req.params.username && !req.user.isAdmin) {
         return res.status(403).json({ error: "Not authorized to delete this user" });
       }
       const user = await Users.findOneAndDelete({
@@ -1243,7 +912,7 @@ app.get(
           totalPages: totalPages,
           totalResults: totalResults,
           resultsPerPage: limit,
-          hasNextPage: page &lt; totalPages,
+          hasNextPage: page < totalPages,
           hasPrevPage: page > 1
         }
       });
@@ -1266,27 +935,3 @@ app.listen(port, '0.0.0.0', () => {
   console.log('Listening on port ' + port);
 });
 
-
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Movies">Movies</a></li><li><a href="global.html#Users">Users</a></li><li><a href="global.html#allowedOrigins">allowedOrigins</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#generateJWTToken">generateJWTToken</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Sep 11 2025 17:35:34 GMT+0200 (Central European Summer Time)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>

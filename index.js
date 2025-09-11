@@ -21,11 +21,14 @@ const { check, validationResult } = require('express-validator');
  * @type {string[]}
  */
 let allowedOrigins = [
+  'http://localhost:4200',
   'http://localhost:8080', 
   'http://testsite.com', 
   'http://localhost:1234', 
   'https://my-flix-clients.netlify.app',
-  'https://my-flix-clients.netlify.app/'
+  'https://my-flix-clients.netlify.app/',
+  'https://souravdas090300.github.io',
+  'https://souravdas090300.github.io/myFlix-Angular-client'
 ];
 
 /**
@@ -1234,3 +1237,5 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on port ' + port);
 });
+
+
