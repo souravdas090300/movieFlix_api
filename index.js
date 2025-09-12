@@ -102,62 +102,34 @@ app.get("/", (req, res) => {
 });
 
 /**
- * @api {get} /movies Get All Movies
- * @apiName GetMovies
- * @apiGroup Movies
- * @apiDescription Retrieve a list of all movies in the database
- * @apiPermission authenticated user
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object[]} movies Array of movie objects
- * @apiSuccess {String} movies._id Movie ID
- * @apiSuccess {String} movies.Title Movie title
- * @apiSuccess {String} movies.Description Movie description
- * @apiSuccess {Object} movies.Genre Genre information
- * @apiSuccess {String} movies.Genre.Name Genre name
- * @apiSuccess {String} movies.Genre.Description Genre description
- * @apiSuccess {Object} movies.Director Director information
- * @apiSuccess {String} movies.Director.Name Director name
- * @apiSuccess {String} movies.Director.Bio Director biography
- * @apiSuccess {String[]} movies.Actors Array of actor names
- * @apiSuccess {String} movies.ImagePath Movie poster image URL
- * @apiSuccess {Boolean} movies.Featured Whether movie is featured
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     [
- *       {
- *         "_id": "507f1f77bcf86cd799439011",
- *         "Title": "The Shawshank Redemption",
- *         "Description": "Two imprisoned men bond over years...",
- *         "Genre": {
- *           "Name": "Drama",
- *           "Description": "Drama genre description"
- *         },
- *         "Director": {
- *           "Name": "Frank Darabont",
- *           "Bio": "Director biography"
- *         },
- *         "Actors": ["Tim Robbins", "Morgan Freeman"],
- *         "ImagePath": "shawshank.png",
- *         "Featured": true
- *       }
- *     ]
- * 
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 401 Unauthorized
- *     {
- *       "error": "Unauthorized"
- *     }
- * 
+ * Get All Movies
+ * @description Return a list of ALL movies to the user
+ * @function getAllMovies
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Array} 200 - Array of all movie objects
+ * @returns {Object} 401 - Unauthorized error
+ * @returns {Object} 500 - Internal server error
  * @example
- * // GET /movies
- * curl -X GET "https://movie-flix.herokuapp.com/movies" \
- *      -H "Authorization: Bearer your-jwt-token"
+ * // Success Response:
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Title": "The Shawshank Redemption",
+ *     "Description": "Two imprisoned men bond over years...",
+ *     "Genre": {
+ *       "Name": "Drama",
+ *       "Description": "Drama genre description"
+ *     },
+ *     "Director": {
+ *       "Name": "Frank Darabont",
+ *       "Bio": "Director biography"
+ *     },
+ *     "Actors": ["Tim Robbins", "Morgan Freeman"],
+ *     "ImagePath": "shawshank.png",
+ *     "Featured": true
+ *   }
+ * ]
  */
 app.get(
   "/movies",
@@ -174,57 +146,33 @@ app.get(
 );
 
 /**
- * @api {get} /movies/:title Get Movie by Title
- * @apiName GetMovieByTitle
- * @apiGroup Movies
- * @apiDescription Retrieve detailed information about a specific movie by its title
- * @apiPermission authenticated user
- * 
- * @apiParam {String} title Movie title (case-sensitive)
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object} movie Movie object
- * @apiSuccess {String} movie._id Movie ID
- * @apiSuccess {String} movie.Title Movie title
- * @apiSuccess {String} movie.Description Movie description
- * @apiSuccess {Object} movie.Genre Genre information
- * @apiSuccess {String} movie.Genre.Name Genre name
- * @apiSuccess {String} movie.Genre.Description Genre description
- * @apiSuccess {Object} movie.Director Director information
- * @apiSuccess {String} movie.Director.Name Director name
- * @apiSuccess {String} movie.Director.Bio Director biography
- * @apiSuccess {String[]} movie.Actors Array of actor names
- * @apiSuccess {String} movie.ImagePath Movie poster image URL
- * @apiSuccess {Boolean} movie.Featured Whether movie is featured
- * 
- * @apiError (400) BadRequest Invalid title parameter
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (404) NotFound Movie not found
- * @apiError (422) ValidationError Title validation failed
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Movie Not Found:
- *     HTTP/1.1 404 Not Found
- *     {
- *       "error": "Movie not found"
- *     }
- * 
- * @apiErrorExample {json} Validation Error:
- *     HTTP/1.1 422 Unprocessable Entity
- *     {
- *       "errors": [
- *         {
- *           "msg": "Title is required",
- *           "param": "title"
- *         }
- *       ]
- *     }
- * 
+ * Get Movie by Title
+ * @description Return data about a single movie by title to the user
+ * @function getMovieByTitle
+ * @param {Object} req - Express request object
+ * @param {string} req.params.title - Movie title (case-sensitive)
+ * @param {Object} res - Express response object
+ * @returns {Object} 200 - Movie object with description, genre, director, image URL, featured status
+ * @returns {Object} 404 - Movie not found error
+ * @returns {Object} 422 - Validation error
+ * @returns {Object} 500 - Internal server error
  * @example
- * // GET /movies/The Shawshank Redemption
- * curl -X GET "https://movie-flix.herokuapp.com/movies/The%20Shawshank%20Redemption" \
- *      -H "Authorization: Bearer your-jwt-token"
+ * // Success Response:
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Title": "The Shawshank Redemption",
+ *   "Description": "Two imprisoned men bond over years...",
+ *   "Genre": {
+ *     "Name": "Drama",
+ *     "Description": "Drama genre description"
+ *   },
+ *   "Director": {
+ *     "Name": "Frank Darabont",
+ *     "Bio": "Director biography"
+ *   },
+ *   "ImagePath": "shawshank.png",
+ *   "Featured": true
+ * }
  */
 app.get(
   "/movies/:title",
@@ -298,42 +246,22 @@ app.get(
 );
 
 /**
- * @api {get} /genres/:name Get Genre by Name
- * @apiName GetGenreByName
- * @apiGroup Genres
- * @apiDescription Retrieve detailed information about a specific genre
- * @apiPermission authenticated user
- * 
- * @apiParam {String} name Genre name (case-sensitive)
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object} genre Genre information
- * @apiSuccess {String} genre.Name Genre name
- * @apiSuccess {String} genre.Description Genre description
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "Name": "Drama",
- *       "Description": "Drama is a category of narrative fiction..."
- *     }
- * 
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (404) NotFound Genre not found
- * @apiError (422) ValidationError Genre name validation failed
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Genre Not Found:
- *     HTTP/1.1 404 Not Found
- *     {
- *       "error": "Genre not found"
- *     }
- * 
+ * Get Genre by Name
+ * @description Return data about a genre (description) by name/title
+ * @function getGenreByName
+ * @param {Object} req - Express request object
+ * @param {string} req.params.name - Genre name (case-sensitive)
+ * @param {Object} res - Express response object
+ * @returns {Object} 200 - Genre object with name and description
+ * @returns {Object} 404 - Genre not found error
+ * @returns {Object} 422 - Validation error
+ * @returns {Object} 500 - Internal server error
  * @example
- * // GET /genres/Drama
- * curl -X GET "https://movie-flix.herokuapp.com/genres/Drama" \
- *      -H "Authorization: Bearer your-jwt-token"
+ * // Success Response:
+ * {
+ *   "Name": "Drama",
+ *   "Description": "Drama is a category of narrative fiction..."
+ * }
  */
 app.get(
   "/genres/:name",
@@ -360,7 +288,27 @@ app.get(
   }
 );
 
-// Get director by name
+/**
+ * Get Director by Name
+ * @description Return data about a director (bio, birth year, death year) by name
+ * @function getDirectorByName
+ * @param {Object} req - Express request object
+ * @param {string} req.params.name - Director name (case-sensitive)
+ * @param {Object} res - Express response object
+ * @returns {Object} 200 - Director object with name, bio, birth year, death year
+ * @returns {Object} 404 - Director not found error
+ * @returns {Object} 422 - Validation error
+ * @returns {Object} 500 - Internal server error
+ * @example
+ * // Success Response:
+ * {
+ *   "name": "Frank Darabont",
+ *   "bio": "Director biography",
+ *   "birth": "1959-01-28",
+ *   "death": null,
+ *   "movies": "The Shawshank Redemption"
+ * }
+ */
 app.get(
   "/directors/:name",
   [
@@ -458,69 +406,52 @@ app.get(
 );
 
 /**
- * @api {post} /users Register New User
- * @apiName RegisterUser
- * @apiGroup Users
- * @apiDescription Register a new user account
- * @apiPermission none
- * 
- * @apiBody {String} Username Username (minimum 5 characters, alphanumeric only)
- * @apiBody {String} Password User password (required)
- * @apiBody {String} Email User email address (must be valid email format)
- * @apiBody {String} [Birthday] User birthday (optional)
- * 
- * @apiSuccess {Object} user Created user object
- * @apiSuccess {String} user._id User ID
- * @apiSuccess {String} user.Username Username
- * @apiSuccess {String} user.Email User email
- * @apiSuccess {String} user.Birthday User birthday
- * @apiSuccess {String[]} user.FavoriteMovies Array of favorite movie IDs (empty for new users)
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 201 Created
- *     {
- *       "_id": "507f1f77bcf86cd799439011",
- *       "Username": "johndoe",
- *       "Email": "john@example.com",
- *       "Birthday": "1990-01-01",
- *       "FavoriteMovies": []
- *     }
- * 
- * @apiError (400) BadRequest Username already exists
- * @apiError (422) ValidationError Input validation failed
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Username Exists:
- *     HTTP/1.1 400 Bad Request
- *     {
- *       "error": "johndoe already exists"
- *     }
- * 
- * @apiErrorExample {json} Validation Error:
- *     HTTP/1.1 422 Unprocessable Entity
- *     {
- *       "errors": [
- *         {
- *           "msg": "Username is required",
- *           "param": "Username"
- *         },
- *         {
- *           "msg": "Email does not appear to be valid",
- *           "param": "Email"
- *         }
- *       ]
- *     }
- * 
+ * Register a new user account
+ * @function
+ * @name POST /users
+ * @memberof module:myFlixAPI
+ * @param {Object} req.body - User registration data
+ * @param {string} req.body.Username - Username (minimum 5 characters, alphanumeric only)
+ * @param {string} req.body.Password - User password (required)
+ * @param {string} req.body.Email - User email address (must be valid email format)
+ * @param {string} [req.body.Birthday] - User birthday (optional)
+ * @returns {Object} 201 - Created user object
+ * @returns {string} 201.user._id - User ID
+ * @returns {string} 201.user.Username - Username
+ * @returns {string} 201.user.Email - User email
+ * @returns {string} 201.user.Birthday - User birthday
+ * @returns {string[]} 201.user.FavoriteMovies - Array of favorite movie IDs (empty for new users)
+ * @returns {Object} 400 - Username already exists
+ * @returns {Object} 422 - Input validation failed
+ * @returns {Object} 500 - Database error
  * @example
- * // POST /users
- * curl -X POST "https://movie-flix.herokuapp.com/users" \
- *      -H "Content-Type: application/json" \
- *      -d '{
- *        "Username": "johndoe",
- *        "Password": "securePassword123",
- *        "Email": "john@example.com",
- *        "Birthday": "1990-01-01"
- *      }'
+ * // Success Response (201)
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-01",
+ *   "FavoriteMovies": []
+ * }
+ * @example
+ * // Error Response (400) - Username exists
+ * {
+ *   "error": "johndoe already exists"
+ * }
+ * @example
+ * // Error Response (422) - Validation failed
+ * {
+ *   "errors": [
+ *     {
+ *       "msg": "Username is required",
+ *       "param": "Username"
+ *     },
+ *     {
+ *       "msg": "Email does not appear to be valid",
+ *       "param": "Email"
+ *     }
+ *   ]
+ * }
  */
 app.post('/users',
   [
@@ -562,6 +493,41 @@ app.post('/users',
       });
   });
 
+/**
+ * Update user information
+ * @function
+ * @name PUT /users/:Username
+ * @memberof module:myFlixAPI
+ * @param {string} req.params.Username - Username to update
+ * @param {Object} req.body - Updated user data
+ * @param {string} req.body.Username - New username (minimum 5 characters, alphanumeric only)
+ * @param {string} req.body.Password - New password (required)
+ * @param {string} req.body.Email - New email address (must be valid email format)
+ * @param {string} [req.body.Birthday] - New birthday (optional)
+ * @returns {Object} 200 - Updated user object
+ * @returns {string} 200.user._id - User ID
+ * @returns {string} 200.user.Username - Updated username
+ * @returns {string} 200.user.Email - Updated email
+ * @returns {string} 200.user.Birthday - Updated birthday
+ * @returns {string[]} 200.user.FavoriteMovies - Array of favorite movie IDs
+ * @returns {Object} 400 - Permission denied (user can only update own profile)
+ * @returns {Object} 422 - Input validation failed
+ * @returns {Object} 500 - Database error
+ * @example
+ * // Success Response (200)
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johnsmith",
+ *   "Email": "johnsmith@example.com",
+ *   "Birthday": "1990-01-01",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439012"]
+ * }
+ * @example
+ * // Error Response (400) - Permission denied
+ * {
+ *   "error": "Permission denied"
+ * }
+ */
 app.put(
   "/users/:Username",
   [
@@ -665,48 +631,35 @@ app.get(
 );
 
 /**
- * @api {post} /users/:username/movies/:movieId Add Movie to Favorites
- * @apiName AddToFavorites
- * @apiGroup Users
- * @apiDescription Add a movie to user's list of favorite movies
- * @apiPermission authenticated user (own account only)
- * 
- * @apiParam {String} username Username of the user
- * @apiParam {String} movieId MongoDB ObjectId of the movie to add
- * 
- * @apiHeader {String} Authorization Bearer JWT token
- * 
- * @apiSuccess {Object} user Updated user object
- * @apiSuccess {String} user._id User ID
- * @apiSuccess {String} user.Username Username
- * @apiSuccess {String} user.Email User email
- * @apiSuccess {String[]} user.FavoriteMovies Array of favorite movie IDs
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "_id": "507f1f77bcf86cd799439011",
- *       "Username": "johndoe",
- *       "Email": "john@example.com",
- *       "FavoriteMovies": ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]
- *     }
- * 
- * @apiError (401) Unauthorized Missing or invalid JWT token
- * @apiError (403) Forbidden Not authorized to update this user's favorites
- * @apiError (404) NotFound User not found
- * @apiError (422) ValidationError Invalid username or movieId
- * @apiError (500) InternalServerError Database error
- * 
- * @apiErrorExample {json} Authorization Error:
- *     HTTP/1.1 403 Forbidden
- *     {
- *       "error": "Not authorized to update this user's favorites"
- *     }
- * 
+ * Add a movie to user's list of favorite movies
+ * @function
+ * @name POST /users/:username/movies/:movieId
+ * @memberof module:myFlixAPI
+ * @param {string} req.params.username - Username of the user
+ * @param {string} req.params.movieId - MongoDB ObjectId of the movie to add
+ * @returns {Object} 200 - Updated user object
+ * @returns {string} 200.user._id - User ID
+ * @returns {string} 200.user.Username - Username
+ * @returns {string} 200.user.Email - User email
+ * @returns {string[]} 200.user.FavoriteMovies - Array of favorite movie IDs
+ * @returns {Object} 401 - Missing or invalid JWT token
+ * @returns {Object} 403 - Not authorized to update this user's favorites
+ * @returns {Object} 404 - User not found
+ * @returns {Object} 422 - Invalid username or movieId
+ * @returns {Object} 500 - Database error
  * @example
- * // POST /users/johndoe/movies/507f1f77bcf86cd799439012
- * curl -X POST "https://movie-flix.herokuapp.com/users/johndoe/movies/507f1f77bcf86cd799439012" \
- *      -H "Authorization: Bearer your-jwt-token"
+ * // Success Response (200)
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]
+ * }
+ * @example
+ * // Error Response (403) - Authorization Error
+ * {
+ *   "error": "Not authorized to update this user's favorites"
+ * }
  */
 app.post(
   "/users/:username/movies/:movieId",
@@ -742,7 +695,37 @@ app.post(
   }
 );
 
-// Remove movie from favorites
+/**
+ * Remove a movie from user's list of favorite movies
+ * @function
+ * @name DELETE /users/:username/movies/:movieId
+ * @memberof module:myFlixAPI
+ * @param {string} req.params.username - Username of the user
+ * @param {string} req.params.movieId - MongoDB ObjectId of the movie to remove
+ * @returns {Object} 200 - Updated user object
+ * @returns {string} 200.user._id - User ID
+ * @returns {string} 200.user.Username - Username
+ * @returns {string} 200.user.Email - User email
+ * @returns {string[]} 200.user.FavoriteMovies - Array of favorite movie IDs (after removal)
+ * @returns {Object} 401 - Missing or invalid JWT token
+ * @returns {Object} 403 - Not authorized to update this user's favorites
+ * @returns {Object} 404 - User not found
+ * @returns {Object} 422 - Invalid username or movieId
+ * @returns {Object} 500 - Database error
+ * @example
+ * // Success Response (200)
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439013"]
+ * }
+ * @example
+ * // Error Response (403) - Authorization Error
+ * {
+ *   "error": "Not authorized to update this user's favorites"
+ * }
+ */
 app.delete(
   "/users/:username/movies/:movieId",
   [
@@ -777,7 +760,35 @@ app.delete(
   }
 );
 
-// Delete user
+/**
+ * Delete a user account
+ * @function
+ * @name DELETE /users/:username
+ * @memberof module:myFlixAPI
+ * @param {string} req.params.username - Username of the user to delete
+ * @returns {Object} 200 - Deletion confirmation message
+ * @returns {string} 200.message - Confirmation that user was deleted
+ * @returns {Object} 401 - Missing or invalid JWT token
+ * @returns {Object} 403 - Not authorized to delete this user
+ * @returns {Object} 404 - User not found
+ * @returns {Object} 422 - Invalid username
+ * @returns {Object} 500 - Database error
+ * @example
+ * // Success Response (200)
+ * {
+ *   "message": "johndoe was deleted."
+ * }
+ * @example
+ * // Error Response (403) - Authorization Error
+ * {
+ *   "error": "Not authorized to delete this user"
+ * }
+ * @example
+ * // Error Response (404) - User not found
+ * {
+ *   "error": "User not found"
+ * }
+ */
 app.delete(
   "/users/:username",
   [

@@ -27,49 +27,32 @@ let generateJWTToken = (user) => {
 };
 
 /**
- * @api {post} /login User Login
- * @apiName LoginUser
- * @apiGroup Authentication
- * @apiDescription Authenticate user credentials and return JWT token
- * @apiPermission none
- * 
- * @apiBody {String} Username User's username
- * @apiBody {String} Password User's password
- * 
- * @apiSuccess {Object} user User information
- * @apiSuccess {String} user._id User ID
- * @apiSuccess {String} user.Username Username
- * @apiSuccess {String} user.Email User email
- * @apiSuccess {String} token JWT authentication token
- * 
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "user": {
- *         "_id": "507f1f77bcf86cd799439011",
- *         "Username": "johndoe",
- *         "Email": "john@example.com"
- *       },
- *       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- *     }
- * 
- * @apiError (400) BadRequest Invalid credentials
- * 
- * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 400 Bad Request
- *     {
- *       "message": "Something is not right",
- *       "user": false
- *     }
- * 
+ * User Login Endpoint
+ * @description Authenticate user credentials and return JWT token
+ * @function loginUser
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.Username - User's username
+ * @param {string} req.body.Password - User's password
+ * @param {Object} res - Express response object
+ * @returns {Object} 200 - Success response with user data and JWT token
+ * @returns {Object} 400 - Error response for invalid credentials
  * @example
- * // POST /login
- * curl -X POST "https://movie-flix.herokuapp.com/login" \
- *      -H "Content-Type: application/json" \
- *      -d '{
- *        "Username": "johndoe",
- *        "Password": "securePassword123"
- *      }'
+ * // Request body:
+ * {
+ *   "Username": "johndoe",
+ *   "Password": "securePassword123"
+ * }
+ * 
+ * // Success Response:
+ * {
+ *   "user": {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com"
+ *   },
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ * }
  */
 module.exports = (router) => {
   router.post("/login", (req, res) => {
