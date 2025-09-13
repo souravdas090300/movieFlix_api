@@ -80,20 +80,14 @@ const Users = Models.User;
 mongoose.connect(process.env.CONNECTION_URI);
 
 /**
- * @api {get} / Welcome Message
- * @apiName GetWelcome
- * @apiGroup General
- * @apiDescription Returns a welcome message for the myFlix API
- * 
- * @apiSuccess {String} message Welcome message with usage instructions
- * 
- * @apiSuccessExample {text} Success-Response:
- *     HTTP/1.1 200 OK
- *     Welcome to myFlix API! Use /movies for movies or /users for user operations.
- * 
+ * Welcome message endpoint
+ * @function
+ * @name GET /
+ * @memberof module:myFlixAPI
+ * @returns {string} 200 - Welcome message with usage instructions
  * @example
- * // GET /
- * curl -X GET "https://movie-flix.herokuapp.com/"
+ * // Success Response (200)
+ * "Welcome to myFlix API! Use /movies for movies or /users for user operations."
  */
 app.get("/", (req, res) => {
   res.send(
