@@ -6,6 +6,7 @@
  * @version 1.0.0
  */
 
+const path = require('path');
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -40,6 +41,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("common"));
+app.use("/documentation", express.static(path.join(__dirname, "out")));
 app.use(express.static("public"));
 
 /**
