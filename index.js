@@ -81,7 +81,7 @@ mongoose.connect(process.env.CONNECTION_URI);
 
 /**
  * Welcome message endpoint
- * @function
+ * @function getWelcome
  * @name GET /
  * @memberof module:myFlixAPI
  * @returns {string} 200 - Welcome message with usage instructions
@@ -117,7 +117,9 @@ app.get("/", (req, res) => {
  *     },
  *     "Director": {
  *       "Name": "Frank Darabont",
- *       "Bio": "Director biography"
+ *       "Bio": "Director biography",
+ *       "Birth": "10/10/1970",
+ *       "Death": "10/10/2025"
  *     },
  *     "Actors": ["Tim Robbins", "Morgan Freeman"],
  *     "ImagePath": "shawshank.png",
@@ -162,7 +164,9 @@ app.get(
  *   },
  *   "Director": {
  *     "Name": "Frank Darabont",
- *     "Bio": "Director biography"
+ *     "Bio": "Director biography",
+ *     "Birth": "10/10/1970",
+ *     "Death": "10/10/2025"
  *   },
  *   "ImagePath": "shawshank.png",
  *   "Featured": true
@@ -296,11 +300,10 @@ app.get(
  * @example
  * // Success Response:
  * {
- *   "name": "Frank Darabont",
- *   "bio": "Director biography",
- *   "birth": "1959-01-28",
- *   "death": null,
- *   "movies": "The Shawshank Redemption"
+ *   "Name": "Frank Darabont",
+ *   "Bio": "Director biography",
+ *   "Birth": "10/10/1970",
+ *   "Death": "10/10/2025"
  * }
  */
 app.get(
@@ -401,7 +404,7 @@ app.get(
 
 /**
  * Register a new user account
- * @function
+ * @function registerUser
  * @name POST /users
  * @memberof module:myFlixAPI
  * @param {Object} req.body - User registration data
@@ -489,7 +492,7 @@ app.post('/users',
 
 /**
  * Update user information
- * @function
+ * @function updateUser
  * @name PUT /users/:Username
  * @memberof module:myFlixAPI
  * @param {string} req.params.Username - Username to update
@@ -626,7 +629,7 @@ app.get(
 
 /**
  * Add a movie to user's list of favorite movies
- * @function
+ * @function addToFavorites
  * @name POST /users/:username/movies/:movieId
  * @memberof module:myFlixAPI
  * @param {string} req.params.username - Username of the user
@@ -691,7 +694,7 @@ app.post(
 
 /**
  * Remove a movie from user's list of favorite movies
- * @function
+ * @function removeFromFavorites
  * @name DELETE /users/:username/movies/:movieId
  * @memberof module:myFlixAPI
  * @param {string} req.params.username - Username of the user
@@ -756,7 +759,7 @@ app.delete(
 
 /**
  * Delete a user account
- * @function
+ * @function deleteUser
  * @name DELETE /users/:username
  * @memberof module:myFlixAPI
  * @param {string} req.params.username - Username of the user to delete
