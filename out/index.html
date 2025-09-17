@@ -42,84 +42,6 @@
 
 
 
-    <section>
-        <article><h1>myFlix API Documentation</h1>
-<h2>Overview</h2>
-<p>The myFlix API is a RESTful web service that provides movie information and user management functionality. This API allows users to register, log in, browse movies, and manage their list of favorite movies.</p>
-<h2>Features</h2>
-<ul>
-<li>User registration and authentication</li>
-<li>JWT-based authorization</li>
-<li>Movie browsing and search</li>
-<li>User favorites management</li>
-<li>Input validation and error handling</li>
-<li>CORS-enabled for web applications</li>
-</ul>
-<h2>Base URL</h2>
-<pre class="prettyprint source"><code>https://movie-flix-fb6c35ebba0a.herokuapp.com/
-</code></pre>
-<h2>Authentication</h2>
-<p>Most endpoints require authentication using JWT tokens. Include the token in the Authorization header:</p>
-<pre class="prettyprint source"><code>Authorization: Bearer your-jwt-token
-</code></pre>
-<h2>API Endpoints</h2>
-<h3>Authentication</h3>
-<ul>
-<li><code>POST /login</code> - User login</li>
-<li><code>POST /users</code> - User registration</li>
-</ul>
-<h3>Movies</h3>
-<ul>
-<li><code>GET /movies</code> - Get all movies</li>
-<li><code>GET /movies/:title</code> - Get movie by title</li>
-<li><code>GET /movies/id/:id</code> - Get movie by ID</li>
-<li><code>GET /genres</code> - Get all genres</li>
-<li><code>GET /genres/:name</code> - Get genre by name</li>
-<li><code>GET /directors/:name</code> - Get director information</li>
-</ul>
-<h3>Users</h3>
-<ul>
-<li><code>GET /users</code> - Get all users (admin only)</li>
-<li><code>GET /users/:username</code> - Get user by username</li>
-<li><code>PUT /users/:username</code> - Update user information</li>
-<li><code>DELETE /users/:username</code> - Delete user account</li>
-<li><code>GET /users/:username/favorites</code> - Get user's favorite movies</li>
-<li><code>POST /users/:username/movies/:movieId</code> - Add movie to favorites</li>
-<li><code>DELETE /users/:username/movies/:movieId</code> - Remove movie from favorites</li>
-</ul>
-<h3>Search</h3>
-<ul>
-<li><code>GET /search</code> - General search across multiple fields</li>
-<li><code>GET /search/movies</code> - Search movies by title</li>
-<li><code>GET /search/genres</code> - Search movies by genre</li>
-<li><code>GET /search/directors</code> - Search movies by director</li>
-<li><code>GET /search/actors</code> - Search movies by actor</li>
-<li><code>GET /search/advanced</code> - Advanced search with multiple filters</li>
-</ul>
-<h2>Error Handling</h2>
-<p>The API returns appropriate HTTP status codes and error messages:</p>
-<ul>
-<li><code>200</code> - Success</li>
-<li><code>201</code> - Created</li>
-<li><code>400</code> - Bad Request</li>
-<li><code>401</code> - Unauthorized</li>
-<li><code>403</code> - Forbidden</li>
-<li><code>404</code> - Not Found</li>
-<li><code>422</code> - Validation Error</li>
-<li><code>500</code> - Internal Server Error</li>
-</ul>
-<h2>Technology Stack</h2>
-<ul>
-<li>Node.js</li>
-<li>Express.js</li>
-<li>MongoDB with Mongoose</li>
-<li>Passport.js for authentication</li>
-<li>bcrypt for password hashing</li>
-<li>express-validator for input validation</li>
-<li>CORS for cross-origin requests</li>
-</ul></article>
-    </section>
-
 
 
 
@@ -141,7 +63,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Handles user authentication and JWT token generation for the myFlix API</p></div>
+            <div class="description">Handles user authentication and JWT token generation for the myFlix API</div>
         
 
         
@@ -244,8 +166,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>This API provides endpoints for managing movies, users, and user favorites.
-It includes authentication, authorization, and data validation features.</p></div>
+            <div class="description">This API provides endpoints for managing movies, users, and user favorites.It includes authentication, authorization, and data validation features.</div>
         
 
         
@@ -332,109 +253,6 @@ It includes authentication, authorization, and data validation features.</p></di
 
 
 
-
-
-
-<section>
-
-<header>
-    
-        <h2>models.js</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Defines mongoose schemas for movies and users</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>1.0.0</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Sourav Das</li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models.js.html">models.js</a>, <a href="models.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
 </div>
 
 <nav>
@@ -444,7 +262,7 @@ It includes authentication, authorization, and data validation features.</p></di
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Sep 14 2025 23:54:08 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Sep 17 2025 13:51:31 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
