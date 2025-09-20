@@ -82,13 +82,12 @@ const Users = Models.User;
 mongoose.connect(process.env.CONNECTION_URI);
 
 /**
- * Welcome message endpoint
  * @function getWelcome
- * @name GET /
- * @memberof module:myFlixAPI
- * @returns {string} 200 - Welcome message with usage instructions
+ * @description - Welcome message endpoint
+ * @route GET /
+ * @returns {string} - Welcome message with usage instructions
  * @example
- * // Success Response (200)
+ * // Response data format
  * "Welcome to myFlix API! Use /movies for movies or /users for user operations."
  */
 app.get("/", (req, res) => {
@@ -98,16 +97,13 @@ app.get("/", (req, res) => {
 });
 
 /**
- * Get All Movies
- * @description Return a list of ALL movies to the user
  * @function getAllMovies
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Array} 200 - Array of all movie objects
- * @returns {Object} 401 - Unauthorized error
- * @returns {Object} 500 - Internal server error
+ * @description - Return a list of ALL movies to the user
+ * @route GET /movies
+ * @returns {Array} - Array of all movie objects
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response:
+ * // Response data format
  * [
  *   {
  *     "_id": "507f1f77bcf86cd799439011",
@@ -144,18 +140,14 @@ app.get(
 );
 
 /**
- * Get Movie by Title
- * @description Return data about a single movie by title to the user
  * @function getMovieByTitle
- * @param {Object} req - Express request object
- * @param {string} req.params.title - Movie title (case-sensitive)
- * @param {Object} res - Express response object
- * @returns {Object} 200 - Movie object with description, genre, director, image URL, featured status
- * @returns {Object} 404 - Movie not found error
- * @returns {Object} 422 - Validation error
- * @returns {Object} 500 - Internal server error
+ * @description - Return data about a single movie by title to the user
+ * @route GET /movies/:title
+ * @param {Query_Parameters} - :title
+ * @returns {object} - Movie object with description, genre, director, image URL, featured status
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response:
+ * // Response data format
  * {
  *   "_id": "507f1f77bcf86cd799439011",
  *   "Title": "The Shawshank Redemption",
@@ -198,6 +190,31 @@ app.get(
   }
 );
 
+/**
+ * @function getMovieById
+ * @description - Get movie by ID
+ * @route GET /movies/id/:id
+ * @param {Query_Parameters} - :id
+ * @returns {object} - Movie object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Title": "The Shawshank Redemption",
+ *   "Description": "Two imprisoned men bond over years...",
+ *   "Genre": {
+ *     "Name": "Drama",
+ *     "Description": "Drama genre description"
+ *   },
+ *   "Director": {
+ *     "Name": "Frank Darabont",
+ *     "Bio": "Director biography"
+ *   },
+ *   "ImagePath": "shawshank.png",
+ *   "Featured": true
+ * }
+ */
 // Get movie by ID
 app.get(
   "/movies/id/:id",
@@ -223,6 +240,21 @@ app.get(
   }
 );
 
+/**
+ * @function getAllGenres
+ * @description - Get all genres
+ * @route GET /genres
+ * @returns {Array} - Array of all genre objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "Drama",
+ *     "description": "Drama is a category of narrative fiction..."
+ *   }
+ * ]
+ */
 // Get all genres
 app.get(
   "/genres",
@@ -246,18 +278,14 @@ app.get(
 );
 
 /**
- * Get Genre by Name
- * @description Return data about a genre (description) by name/title
  * @function getGenreByName
- * @param {Object} req - Express request object
- * @param {string} req.params.name - Genre name (case-sensitive)
- * @param {Object} res - Express response object
- * @returns {Object} 200 - Genre object with name and description
- * @returns {Object} 404 - Genre not found error
- * @returns {Object} 422 - Validation error
- * @returns {Object} 500 - Internal server error
+ * @description - Return data about a genre (description) by name/title
+ * @route GET /genres/:name
+ * @param {Query_Parameters} - :name
+ * @returns {object} - Genre object with name and description
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response:
+ * // Response data format
  * {
  *   "Name": "Drama",
  *   "Description": "Drama is a category of narrative fiction..."
@@ -289,23 +317,20 @@ app.get(
 );
 
 /**
- * Get Director by Name
- * @description Return data about a director (bio, birth year, death year) by name
  * @function getDirectorByName
- * @param {Object} req - Express request object
- * @param {string} req.params.name - Director name (case-sensitive)
- * @param {Object} res - Express response object
- * @returns {Object} 200 - Director object with name, bio, birth year, death year
- * @returns {Object} 404 - Director not found error
- * @returns {Object} 422 - Validation error
- * @returns {Object} 500 - Internal server error
+ * @description - Return data about a director (bio, birth year, death year) by name
+ * @route GET /directors/:name
+ * @param {Query_Parameters} - :name
+ * @returns {object} - Director object with name, bio, birth year, death year
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response:
+ * // Response data format
  * {
- *   "Name": "Frank Darabont",
- *   "Bio": "Director biography",
- *   "Birth": "10/10/1970",
- *   "Death": "10/10/2025"
+ *   "name": "Frank Darabont",
+ *   "bio": "Director biography",
+ *   "birth": "10/10/1970",
+ *   "death": "10/10/2025",
+ *   "movies": "The Shawshank Redemption"
  * }
  */
 app.get(
@@ -338,6 +363,16 @@ app.get(
   }
 );
 
+/**
+ * @function getAllActors
+ * @description - Get all unique actors
+ * @route GET /actors
+ * @returns {Array} - Array of actor names
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * ["Tim Robbins", "Morgan Freeman", "Tom Hanks"]
+ */
 // Get all unique actors
 app.get(
   "/actors",
@@ -358,6 +393,18 @@ app.get(
   }
 );
 
+/**
+ * @function getAllActresses
+ * @description - Get all unique actress names
+ * @route GET /actresses
+ * @returns {object} - Object containing array of actress names
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "actresses": ["Actress 1", "Actress 2"]
+ * }
+ */
 // Get all unique actress names
 app.get(
   "/actresses",
@@ -389,6 +436,24 @@ app.get(
 
 // === USER ROUTES ===
 
+/**
+ * @function getAllUsers
+ * @description - Get all users (should be protected and restricted to admins)
+ * @route GET /users
+ * @returns {Array} - Array of all user objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com",
+ *     "Birthday": "1990-01-01",
+ *     "FavoriteMovies": []
+ *   }
+ * ]
+ */
 // Get all users (should be protected and restricted to admins)
 app.get(
   "/users",
@@ -405,51 +470,27 @@ app.get(
 );
 
 /**
- * Register a new user account
  * @function registerUser
- * @name POST /users
- * @memberof module:myFlixAPI
- * @param {Object} req.body - User registration data
- * @param {string} req.body.Username - Username (minimum 5 characters, alphanumeric only)
- * @param {string} req.body.Password - User password (required)
- * @param {string} req.body.Email - User email address (must be valid email format)
- * @param {string} [req.body.Birthday] - User birthday (optional)
- * @returns {Object} 201 - Created user object
- * @returns {string} 201.user._id - User ID
- * @returns {string} 201.user.Username - Username
- * @returns {string} 201.user.Email - User email
- * @returns {string} 201.user.Birthday - User birthday
- * @returns {string[]} 201.user.FavoriteMovies - Array of favorite movie IDs (empty for new users)
- * @returns {Object} 400 - Username already exists
- * @returns {Object} 422 - Input validation failed
- * @returns {Object} 500 - Database error
+ * @description - Register a new user account
+ * @route POST /users
+ * @param {Request_Body} - JSON object
+ * @returns {object} - Created user object
  * @example
- * // Success Response (201)
+ * // Request data format
+ * {
+ *   "Username": "johndoe",
+ *   "Password": "password123",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-01"
+ * }
+ * @example
+ * // Response data format
  * {
  *   "_id": "507f1f77bcf86cd799439011",
  *   "Username": "johndoe",
  *   "Email": "john@example.com",
  *   "Birthday": "1990-01-01",
  *   "FavoriteMovies": []
- * }
- * @example
- * // Error Response (400) - Username exists
- * {
- *   "error": "johndoe already exists"
- * }
- * @example
- * // Error Response (422) - Validation failed
- * {
- *   "errors": [
- *     {
- *       "msg": "Username is required",
- *       "param": "Username"
- *     },
- *     {
- *       "msg": "Email does not appear to be valid",
- *       "param": "Email"
- *     }
- *   ]
  * }
  */
 app.post('/users',
@@ -493,38 +534,30 @@ app.post('/users',
   });
 
 /**
- * Update user information
  * @function updateUser
- * @name PUT /users/:Username
- * @memberof module:myFlixAPI
- * @param {string} req.params.Username - Username to update
- * @param {Object} req.body - Updated user data
- * @param {string} req.body.Username - New username (minimum 5 characters, alphanumeric only)
- * @param {string} req.body.Password - New password (required)
- * @param {string} req.body.Email - New email address (must be valid email format)
- * @param {string} [req.body.Birthday] - New birthday (optional)
- * @returns {Object} 200 - Updated user object
- * @returns {string} 200.user._id - User ID
- * @returns {string} 200.user.Username - Updated username
- * @returns {string} 200.user.Email - Updated email
- * @returns {string} 200.user.Birthday - Updated birthday
- * @returns {string[]} 200.user.FavoriteMovies - Array of favorite movie IDs
- * @returns {Object} 400 - Permission denied (user can only update own profile)
- * @returns {Object} 422 - Input validation failed
- * @returns {Object} 500 - Database error
+ * @description - Updates the logged in user's information
+ * @route PUT /users/:Username
+ * @param {Query_Parameters} - :Username
+ * @param {Request_Body} - JSON object
+ * @param {Response} - JSON object
+ * @param {authentication} - Bearer token (JWT)
+ * @returns {object} - Updated user object
  * @example
- * // Success Response (200)
+ * // Request data format
+ * {
+ *   "Username": "johnsmith",
+ *   "Password": "newpassword123",
+ *   "Email": "johnsmith@example.com",
+ *   "Birthday": "1990-01-01"
+ * }
+ * @example
+ * // Response data format
  * {
  *   "_id": "507f1f77bcf86cd799439011",
  *   "Username": "johnsmith",
  *   "Email": "johnsmith@example.com",
  *   "Birthday": "1990-01-01",
  *   "FavoriteMovies": ["507f1f77bcf86cd799439012"]
- * }
- * @example
- * // Error Response (400) - Permission denied
- * {
- *   "error": "Permission denied"
  * }
  */
 app.put(
@@ -569,6 +602,23 @@ app.put(
 );
 
 
+/**
+ * @function getUserByUsername
+ * @description - Get user by username
+ * @route GET /users/:username
+ * @param {Query_Parameters} - :username
+ * @returns {object} - User object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-01",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439012"]
+ * }
+ */
 // Get user by username
 app.get(
   "/users/:username",
@@ -597,6 +647,27 @@ app.get(
   }
 );
 
+/**
+ * @function getUserFavorites
+ * @description - Get user's favorite movies with full movie details
+ * @route GET /users/:username/favorites
+ * @param {Query_Parameters} - :username
+ * @returns {object} - Object containing username, favorite movies array, and count
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "username": "johndoe",
+ *   "favoriteMovies": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439012",
+ *       "Title": "The Godfather",
+ *       "Description": "Movie description..."
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // Get user's favorite movies with full movie details
 app.get(
   "/users/:username/favorites",
@@ -630,34 +701,19 @@ app.get(
 );
 
 /**
- * Add a movie to user's list of favorite movies
  * @function addToFavorites
- * @name POST /users/:username/movies/:movieId
- * @memberof module:myFlixAPI
- * @param {string} req.params.username - Username of the user
- * @param {string} req.params.movieId - MongoDB ObjectId of the movie to add
- * @returns {Object} 200 - Updated user object
- * @returns {string} 200.user._id - User ID
- * @returns {string} 200.user.Username - Username
- * @returns {string} 200.user.Email - User email
- * @returns {string[]} 200.user.FavoriteMovies - Array of favorite movie IDs
- * @returns {Object} 401 - Missing or invalid JWT token
- * @returns {Object} 403 - Not authorized to update this user's favorites
- * @returns {Object} 404 - User not found
- * @returns {Object} 422 - Invalid username or movieId
- * @returns {Object} 500 - Database error
+ * @description - Add a movie to user's list of favorite movies
+ * @route POST /users/:username/movies/:movieId
+ * @param {Query_Parameters} - :username, :movieId
+ * @returns {object} - Updated user object
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response (200)
+ * // Response data format
  * {
  *   "_id": "507f1f77bcf86cd799439011",
  *   "Username": "johndoe",
  *   "Email": "john@example.com",
  *   "FavoriteMovies": ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]
- * }
- * @example
- * // Error Response (403) - Authorization Error
- * {
- *   "error": "Not authorized to update this user's favorites"
  * }
  */
 app.post(
@@ -695,34 +751,19 @@ app.post(
 );
 
 /**
- * Remove a movie from user's list of favorite movies
  * @function removeFromFavorites
- * @name DELETE /users/:username/movies/:movieId
- * @memberof module:myFlixAPI
- * @param {string} req.params.username - Username of the user
- * @param {string} req.params.movieId - MongoDB ObjectId of the movie to remove
- * @returns {Object} 200 - Updated user object
- * @returns {string} 200.user._id - User ID
- * @returns {string} 200.user.Username - Username
- * @returns {string} 200.user.Email - User email
- * @returns {string[]} 200.user.FavoriteMovies - Array of favorite movie IDs (after removal)
- * @returns {Object} 401 - Missing or invalid JWT token
- * @returns {Object} 403 - Not authorized to update this user's favorites
- * @returns {Object} 404 - User not found
- * @returns {Object} 422 - Invalid username or movieId
- * @returns {Object} 500 - Database error
+ * @description - Remove a movie from user's list of favorite movies
+ * @route DELETE /users/:username/movies/:movieId
+ * @param {Query_Parameters} - :username, :movieId
+ * @returns {object} - Updated user object
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response (200)
+ * // Response data format
  * {
  *   "_id": "507f1f77bcf86cd799439011",
  *   "Username": "johndoe",
  *   "Email": "john@example.com",
  *   "FavoriteMovies": ["507f1f77bcf86cd799439013"]
- * }
- * @example
- * // Error Response (403) - Authorization Error
- * {
- *   "error": "Not authorized to update this user's favorites"
  * }
  */
 app.delete(
@@ -760,32 +801,16 @@ app.delete(
 );
 
 /**
- * Delete a user account
  * @function deleteUser
- * @name DELETE /users/:username
- * @memberof module:myFlixAPI
- * @param {string} req.params.username - Username of the user to delete
- * @returns {Object} 200 - Deletion confirmation message
- * @returns {string} 200.message - Confirmation that user was deleted
- * @returns {Object} 401 - Missing or invalid JWT token
- * @returns {Object} 403 - Not authorized to delete this user
- * @returns {Object} 404 - User not found
- * @returns {Object} 422 - Invalid username
- * @returns {Object} 500 - Database error
+ * @description - Delete a user account
+ * @route DELETE /users/:username
+ * @param {Query_Parameters} - :username
+ * @returns {object} - Deletion confirmation message
+ * @param {authentication} - Bearer token (JWT)
  * @example
- * // Success Response (200)
+ * // Response data format
  * {
  *   "message": "johndoe was deleted."
- * }
- * @example
- * // Error Response (403) - Authorization Error
- * {
- *   "error": "Not authorized to delete this user"
- * }
- * @example
- * // Error Response (404) - User not found
- * {
- *   "error": "User not found"
  * }
  */
 app.delete(
@@ -819,6 +844,22 @@ app.delete(
 
 // === SEARCH ROUTES ===
 
+/**
+ * @function getFeaturedMovies
+ * @description - Get featured movies (commonly needed for homepage)
+ * @route GET /movies/featured
+ * @returns {Array} - Array of featured movie objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Title": "The Shawshank Redemption",
+ *     "Featured": true
+ *   }
+ * ]
+ */
 // Get featured movies (commonly needed for homepage)
 app.get(
   "/movies/featured",
@@ -834,6 +875,26 @@ app.get(
   }
 );
 
+/**
+ * @function getMoviesByGenre
+ * @description - Get movies by genre (commonly needed for filtering)
+ * @route GET /movies/genre/:genre
+ * @param {Query_Parameters} - :genre
+ * @returns {Array} - Array of movies matching the genre
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Title": "The Shawshank Redemption",
+ *     "Genre": {
+ *       "Name": "Drama",
+ *       "Description": "Drama genre description"
+ *     }
+ *   }
+ * ]
+ */
 // Get movies by genre (commonly needed for filtering)
 app.get(
   "/movies/genre/:genre",
@@ -856,6 +917,26 @@ app.get(
   }
 );
 
+/**
+ * @function generalSearch
+ * @description - General search endpoint - searches across multiple fields
+ * @route GET /search
+ * @param {Query_Parameters} - ?q=searchQuery
+ * @returns {object} - Search results object with query, results array, and count
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // General search endpoint - searches across multiple fields
 app.get(
   "/search",
@@ -895,6 +976,26 @@ app.get(
   }
 );
 
+/**
+ * @function searchMoviesByTitle
+ * @description - Search movies by title
+ * @route GET /search/movies
+ * @param {Query_Parameters} - ?title=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "shawshank",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // Search movies by title
 app.get(
   "/search/movies",
@@ -926,6 +1027,27 @@ app.get(
   }
 );
 
+/**
+ * @function searchMoviesByGenre
+ * @description - Search movies by genre
+ * @route GET /search/genres
+ * @param {Query_Parameters} - ?genre=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Genre": {"Name": "Drama"}
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // Search movies by genre
 app.get(
   "/search/genres",
@@ -957,6 +1079,27 @@ app.get(
   }
 );
 
+/**
+ * @function searchMoviesByDirector
+ * @description - Search movies by director
+ * @route GET /search/directors
+ * @param {Query_Parameters} - ?director=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "darabont",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Director": {"Name": "Frank Darabont"}
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // Search movies by director
 app.get(
   "/search/directors",
@@ -988,6 +1131,27 @@ app.get(
   }
 );
 
+/**
+ * @function searchMoviesByActor
+ * @description - Search movies by actor
+ * @route GET /search/actors
+ * @param {Query_Parameters} - ?actor=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "tim robbins",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Actors": ["Tim Robbins", "Morgan Freeman"]
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // Search movies by actor
 app.get(
   "/search/actors",
@@ -1019,6 +1183,29 @@ app.get(
   }
 );
 
+/**
+ * @function advancedSearch
+ * @description - Advanced search with multiple filters
+ * @route GET /search/advanced
+ * @param {Query_Parameters} - ?title=&genre=&director=&actor=&year=
+ * @returns {object} - Search results object with filters applied
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "filters": {
+ *     "title": "shawshank",
+ *     "genre": "drama"
+ *   },
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
 // Advanced search with multiple filters
 app.get(
   "/search/advanced",
@@ -1066,6 +1253,25 @@ app.get(
   }
 );
 
+/**
+ * @function searchSuggestions
+ * @description - Auto-suggestions endpoint for search-as-you-type functionality
+ * @route GET /search/suggestions
+ * @param {Query_Parameters} - ?q=searchQuery&limit=10
+ * @returns {object} - Suggestions object with different categories
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "shaw",
+ *   "suggestions": {
+ *     "movies": [{"type": "movie", "value": "The Shawshank Redemption"}],
+ *     "genres": [{"type": "genre", "value": "Drama"}],
+ *     "directors": [{"type": "director", "value": "Frank Darabont"}],
+ *     "actors": [{"type": "actor", "value": "Tim Robbins"}]
+ *   }
+ * }
+ */
 // Auto-suggestions endpoint for search-as-you-type functionality
 app.get(
   "/search/suggestions",
@@ -1131,6 +1337,31 @@ app.get(
   }
 );
 
+/**
+ * @function quickSearch
+ * @description - Quick search endpoint optimized for fast results (limited fields)
+ * @route GET /search/quick
+ * @param {Query_Parameters} - ?q=searchQuery&limit=20
+ * @returns {object} - Quick search results with essential fields only
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Genre": {"Name": "Drama"},
+ *       "Director": {"Name": "Frank Darabont"},
+ *       "Year": 1994,
+ *       "ImagePath": "shawshank.png"
+ *     }
+ *   ],
+ *   "count": 1,
+ *   "isQuickSearch": true
+ * }
+ */
 // Quick search endpoint optimized for fast results (limited fields)
 app.get(
   "/search/quick",
@@ -1178,6 +1409,33 @@ app.get(
   }
 );
 
+/**
+ * @function paginatedSearch
+ * @description - Search with pagination for better performance
+ * @route GET /search/paginated
+ * @param {Query_Parameters} - ?q=searchQuery&page=1&limit=20
+ * @returns {object} - Search results with pagination information
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "pagination": {
+ *     "currentPage": 1,
+ *     "totalPages": 1,
+ *     "totalResults": 1,
+ *     "resultsPerPage": 20,
+ *     "hasNextPage": false,
+ *     "hasPrevPage": false
+ *   }
+ * }
+ */
 // Search with pagination for better performance
 app.get(
   "/search/paginated",

@@ -396,6 +396,730 @@
     
 
     
+    <h4 class="name" id="addToFavorites"><span class="type-signature"></span>addToFavorites<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Add a movie to user's list of favorite movies
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:username, :movieId</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line703">line 703</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Updated user object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Username": "johndoe",  "Email": "john@example.com",  "FavoriteMovies": ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="advancedSearch"><span class="type-signature"></span>advancedSearch<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Advanced search with multiple filters
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?title=&genre=&director=&actor=&year=</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1186">line 1186</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results object with filters applied
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "filters": {    "title": "shawshank",    "genre": "drama"  },  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption"    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="deleteUser"><span class="type-signature"></span>deleteUser<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Delete a user account
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:username</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line803">line 803</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Deletion confirmation message
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "message": "johndoe was deleted."}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="generalSearch"><span class="type-signature"></span>generalSearch<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - General search endpoint - searches across multiple fields
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?q=searchQuery</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line920">line 920</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results object with query, results array, and count
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "drama",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption"    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="generateJWTToken"><span class="type-signature"></span>generateJWTToken<span class="signature">(user)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
@@ -604,7 +1328,7 @@
     
 
     
-    <h4 class="name" id="getAllMovies"><span class="type-signature"></span>getAllMovies<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {Array|Object|Object}</span></h4>
+    <h4 class="name" id="getAllActors"><span class="type-signature"></span>getAllActors<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
     
@@ -612,7 +1336,7 @@
 
 
 <div class="description">
-    Return a list of ALL movies to the user
+    - Get all unique actors
 </div>
 
 
@@ -630,8 +1354,6 @@
     <thead>
     <tr>
         
-        <th>Name</th>
-        
 
         <th>Type</th>
 
@@ -648,13 +1370,11 @@
 
         <tr>
             
-                <td class="name"><code>req</code></td>
-            
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">authentication</span>
 
 
             
@@ -664,30 +1384,7 @@
 
             
 
-            <td class="description last">Express request object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Express response object</td>
+            <td class="description last">Bearer token (JWT)</td>
         </tr>
 
     
@@ -728,7 +1425,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line100">line 100</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line366">line 366</a>
     </li></ul></dd>
     
 
@@ -754,10 +1451,10 @@
 
 
 <h5>Returns:</h5>
-<ul>
-        <li>
+
+        
 <div class="param-desc">
-    200 - Array of all movie objects
+    - Array of actor names
 </div>
 
 
@@ -773,55 +1470,15 @@
 
     </dd>
 </dl>
-</li>
+
     
-        <li>
-<div class="param-desc">
-    401 - Unauthorized error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    500 - Internal server error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    </ul>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Success Response:[  {    "_id": "507f1f77bcf86cd799439011",    "Title": "The Shawshank Redemption",    "Description": "Two imprisoned men bond over years...",    "Genre": {      "Name": "Drama",      "Description": "Drama genre description"    },    "Director": {      "Name": "Frank Darabont",      "Bio": "Director biography",      "Birth": "10/10/1970",      "Death": "10/10/2025"    },    "Actors": ["Tim Robbins", "Morgan Freeman"],    "ImagePath": "shawshank.png",    "Featured": true  }]</code></pre>
+    <pre class="prettyprint"><code>// Response data format["Tim Robbins", "Morgan Freeman", "Tom Hanks"]</code></pre>
 
 
 
@@ -831,7 +1488,7 @@
     
 
     
-    <h4 class="name" id="getDirectorByName"><span class="type-signature"></span>getDirectorByName<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {Object|Object|Object|Object}</span></h4>
+    <h4 class="name" id="getAllActresses"><span class="type-signature"></span>getAllActresses<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
     
 
     
@@ -839,7 +1496,7 @@
 
 
 <div class="description">
-    Return data about a director (bio, birth year, death year) by name
+    - Get all unique actress names
 </div>
 
 
@@ -857,8 +1514,6 @@
     <thead>
     <tr>
         
-        <th>Name</th>
-        
 
         <th>Type</th>
 
@@ -875,13 +1530,11 @@
 
         <tr>
             
-                <td class="name"><code>req</code></td>
-            
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">authentication</span>
 
 
             
@@ -891,79 +1544,7 @@
 
             
 
-            <td class="description last">Express request object
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>params.name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Director name (case-sensitive)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Express response object</td>
+            <td class="description last">Bearer token (JWT)</td>
         </tr>
 
     
@@ -1004,7 +1585,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line291">line 291</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line396">line 396</a>
     </li></ul></dd>
     
 
@@ -1030,10 +1611,10 @@
 
 
 <h5>Returns:</h5>
-<ul>
-        <li>
+
+        
 <div class="param-desc">
-    200 - Director object with name, bio, birth year, death year
+    - Object containing array of actress names
 </div>
 
 
@@ -1044,80 +1625,20 @@
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
     </dd>
 </dl>
-</li>
+
     
-        <li>
-<div class="param-desc">
-    404 - Director not found error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    422 - Validation error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    500 - Internal server error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    </ul>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Success Response:{  "Name": "Frank Darabont",  "Bio": "Director biography",  "Birth": "10/10/1970",  "Death": "10/10/2025"}</code></pre>
+    <pre class="prettyprint"><code>// Response data format{  "actresses": ["Actress 1", "Actress 2"]}</code></pre>
 
 
 
@@ -1127,7 +1648,7 @@
     
 
     
-    <h4 class="name" id="getGenreByName"><span class="type-signature"></span>getGenreByName<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {Object|Object|Object|Object}</span></h4>
+    <h4 class="name" id="getAllGenres"><span class="type-signature"></span>getAllGenres<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
     
@@ -1135,7 +1656,7 @@
 
 
 <div class="description">
-    Return data about a genre (description) by name/title
+    - Get all genres
 </div>
 
 
@@ -1153,8 +1674,6 @@
     <thead>
     <tr>
         
-        <th>Name</th>
-        
 
         <th>Type</th>
 
@@ -1171,13 +1690,11 @@
 
         <tr>
             
-                <td class="name"><code>req</code></td>
-            
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">authentication</span>
 
 
             
@@ -1187,79 +1704,7 @@
 
             
 
-            <td class="description last">Express request object
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>params.name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Genre name (case-sensitive)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Express response object</td>
+            <td class="description last">Bearer token (JWT)</td>
         </tr>
 
     
@@ -1300,7 +1745,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line248">line 248</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line243">line 243</a>
     </li></ul></dd>
     
 
@@ -1326,10 +1771,10 @@
 
 
 <h5>Returns:</h5>
-<ul>
-        <li>
+
+        
 <div class="param-desc">
-    200 - Genre object with name and description
+    - Array of all genre objects
 </div>
 
 
@@ -1340,80 +1785,20 @@
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">Array</span>
 
 
     </dd>
 </dl>
-</li>
+
     
-        <li>
-<div class="param-desc">
-    404 - Genre not found error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    422 - Validation error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    500 - Internal server error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    </ul>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Success Response:{  "Name": "Drama",  "Description": "Drama is a category of narrative fiction..."}</code></pre>
+    <pre class="prettyprint"><code>// Response data format[  {    "_id": "Drama",    "description": "Drama is a category of narrative fiction..."  }]</code></pre>
 
 
 
@@ -1423,7 +1808,7 @@
     
 
     
-    <h4 class="name" id="getMovieByTitle"><span class="type-signature"></span>getMovieByTitle<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {Object|Object|Object|Object}</span></h4>
+    <h4 class="name" id="getAllMovies"><span class="type-signature"></span>getAllMovies<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
     
@@ -1431,7 +1816,7 @@
 
 
 <div class="description">
-    Return data about a single movie by title to the user
+    - Return a list of ALL movies to the user
 </div>
 
 
@@ -1449,8 +1834,6 @@
     <thead>
     <tr>
         
-        <th>Name</th>
-        
 
         <th>Type</th>
 
@@ -1467,13 +1850,11 @@
 
         <tr>
             
-                <td class="name"><code>req</code></td>
-            
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">authentication</span>
 
 
             
@@ -1483,79 +1864,7 @@
 
             
 
-            <td class="description last">Express request object
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>params.title</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Movie title (case-sensitive)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Express response object</td>
+            <td class="description last">Bearer token (JWT)</td>
         </tr>
 
     
@@ -1596,7 +1905,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line146">line 146</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line99">line 99</a>
     </li></ul></dd>
     
 
@@ -1622,10 +1931,10 @@
 
 
 <h5>Returns:</h5>
-<ul>
-        <li>
+
+        
 <div class="param-desc">
-    200 - Movie object with description, genre, director, image URL, featured status
+    - Array of all movie objects
 </div>
 
 
@@ -1636,80 +1945,1722 @@
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">Array</span>
 
 
     </dd>
 </dl>
-</li>
+
     
-        <li>
-<div class="param-desc">
-    404 - Movie not found error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    422 - Validation error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    
-        <li>
-<div class="param-desc">
-    500 - Internal server error
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-</li>
-    </ul>
 
 
 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Success Response:{  "_id": "507f1f77bcf86cd799439011",  "Title": "The Shawshank Redemption",  "Description": "Two imprisoned men bond over years...",  "Genre": {    "Name": "Drama",    "Description": "Drama genre description"  },  "Director": {    "Name": "Frank Darabont",    "Bio": "Director biography",    "Birth": "10/10/1970",    "Death": "10/10/2025"  },  "ImagePath": "shawshank.png",  "Featured": true}</code></pre>
+    <pre class="prettyprint"><code>// Response data format[  {    "_id": "507f1f77bcf86cd799439011",    "Title": "The Shawshank Redemption",    "Description": "Two imprisoned men bond over years...",    "Genre": {      "Name": "Drama",      "Description": "Drama genre description"    },    "Director": {      "Name": "Frank Darabont",      "Bio": "Director biography",      "Birth": "10/10/1970",      "Death": "10/10/2025"    },    "Actors": ["Tim Robbins", "Morgan Freeman"],    "ImagePath": "shawshank.png",    "Featured": true  }]</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getAllUsers"><span class="type-signature"></span>getAllUsers<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Get all users (should be protected and restricted to admins)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line439">line 439</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Array of all user objects
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format[  {    "_id": "507f1f77bcf86cd799439011",    "Username": "johndoe",    "Email": "john@example.com",    "Birthday": "1990-01-01",    "FavoriteMovies": []  }]</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getDirectorByName"><span class="type-signature"></span>getDirectorByName<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Return data about a director (bio, birth year, death year) by name
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line319">line 319</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Director object with name, bio, birth year, death year
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "name": "Frank Darabont",  "bio": "Director biography",  "birth": "10/10/1970",  "death": "10/10/2025",  "movies": "The Shawshank Redemption"}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getFeaturedMovies"><span class="type-signature"></span>getFeaturedMovies<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Get featured movies (commonly needed for homepage)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line847">line 847</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Array of featured movie objects
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format[  {    "_id": "507f1f77bcf86cd799439011",    "Title": "The Shawshank Redemption",    "Featured": true  }]</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getGenreByName"><span class="type-signature"></span>getGenreByName<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Return data about a genre (description) by name/title
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line280">line 280</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Genre object with name and description
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "Name": "Drama",  "Description": "Drama is a category of narrative fiction..."}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMovieById"><span class="type-signature"></span>getMovieById<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Get movie by ID
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:id</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line193">line 193</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Movie object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Title": "The Shawshank Redemption",  "Description": "Two imprisoned men bond over years...",  "Genre": {    "Name": "Drama",    "Description": "Drama genre description"  },  "Director": {    "Name": "Frank Darabont",    "Bio": "Director biography"  },  "ImagePath": "shawshank.png",  "Featured": true}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMovieByTitle"><span class="type-signature"></span>getMovieByTitle<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Return data about a single movie by title to the user
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:title</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line142">line 142</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Movie object with description, genre, director, image URL, featured status
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Title": "The Shawshank Redemption",  "Description": "Two imprisoned men bond over years...",  "Genre": {    "Name": "Drama",    "Description": "Drama genre description"  },  "Director": {    "Name": "Frank Darabont",    "Bio": "Director biography",    "Birth": "10/10/1970",    "Death": "10/10/2025"  },  "ImagePath": "shawshank.png",  "Featured": true}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMoviesByGenre"><span class="type-signature"></span>getMoviesByGenre<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Get movies by genre (commonly needed for filtering)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:genre</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line878">line 878</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Array of movies matching the genre
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format[  {    "_id": "507f1f77bcf86cd799439011",    "Title": "The Shawshank Redemption",    "Genre": {      "Name": "Drama",      "Description": "Drama genre description"    }  }]</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getUserByUsername"><span class="type-signature"></span>getUserByUsername<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Get user by username
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:username</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line605">line 605</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - User object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Username": "johndoe",  "Email": "john@example.com",  "Birthday": "1990-01-01",  "FavoriteMovies": ["507f1f77bcf86cd799439012"]}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getUserFavorites"><span class="type-signature"></span>getUserFavorites<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Get user's favorite movies with full movie details
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:username</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line650">line 650</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Object containing username, favorite movies array, and count
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "username": "johndoe",  "favoriteMovies": [    {      "_id": "507f1f77bcf86cd799439012",      "Title": "The Godfather",      "Description": "Movie description..."    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getWelcome"><span class="type-signature"></span>getWelcome<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Welcome message endpoint
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line84">line 84</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Welcome message with usage instructions
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format"Welcome to myFlix API! Use /movies for movies or /users for user operations."</code></pre>
 
 
 
@@ -2042,6 +3993,1841 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="paginatedSearch"><span class="type-signature"></span>paginatedSearch<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Search with pagination for better performance
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?q=searchQuery&page=1&limit=20</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1412">line 1412</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results with pagination information
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "drama",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption"    }  ],  "pagination": {    "currentPage": 1,    "totalPages": 1,    "totalResults": 1,    "resultsPerPage": 20,    "hasNextPage": false,    "hasPrevPage": false  }}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="quickSearch"><span class="type-signature"></span>quickSearch<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Quick search endpoint optimized for fast results (limited fields)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?q=searchQuery&limit=20</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1340">line 1340</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Quick search results with essential fields only
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "drama",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption",      "Genre": {"Name": "Drama"},      "Director": {"Name": "Frank Darabont"},      "Year": 1994,      "ImagePath": "shawshank.png"    }  ],  "count": 1,  "isQuickSearch": true}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="registerUser"><span class="type-signature"></span>registerUser<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Register a new user account
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request_Body</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">JSON object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line472">line 472</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Created user object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>// Request data format{  "Username": "johndoe",  "Password": "password123",  "Email": "john@example.com",  "Birthday": "1990-01-01"}</code></pre>
+
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Username": "johndoe",  "Email": "john@example.com",  "Birthday": "1990-01-01",  "FavoriteMovies": []}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="removeFromFavorites"><span class="type-signature"></span>removeFromFavorites<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Remove a movie from user's list of favorite movies
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:username, :movieId</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line753">line 753</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Updated user object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Username": "johndoe",  "Email": "john@example.com",  "FavoriteMovies": ["507f1f77bcf86cd799439013"]}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchMoviesByActor"><span class="type-signature"></span>searchMoviesByActor<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Search movies by actor
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?actor=searchQuery</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1134">line 1134</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "tim robbins",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption",      "Actors": ["Tim Robbins", "Morgan Freeman"]    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchMoviesByDirector"><span class="type-signature"></span>searchMoviesByDirector<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Search movies by director
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?director=searchQuery</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1082">line 1082</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "darabont",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption",      "Director": {"Name": "Frank Darabont"}    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchMoviesByGenre"><span class="type-signature"></span>searchMoviesByGenre<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Search movies by genre
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?genre=searchQuery</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1030">line 1030</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "drama",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption",      "Genre": {"Name": "Drama"}    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchMoviesByTitle"><span class="type-signature"></span>searchMoviesByTitle<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Search movies by title
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?title=searchQuery</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line979">line 979</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Search results object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "shawshank",  "results": [    {      "_id": "507f1f77bcf86cd799439011",      "Title": "The Shawshank Redemption"    }  ],  "count": 1}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchSuggestions"><span class="type-signature"></span>searchSuggestions<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Auto-suggestions endpoint for search-as-you-type functionality
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">?q=searchQuery&limit=10</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1256">line 1256</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Suggestions object with different categories
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Response data format{  "query": "shaw",  "suggestions": {    "movies": [{"type": "movie", "value": "The Shawshank Redemption"}],    "genres": [{"type": "genre", "value": "Drama"}],    "directors": [{"type": "director", "value": "Frank Darabont"}],    "actors": [{"type": "actor", "value": "Tim Robbins"}]  }}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateUser"><span class="type-signature"></span>updateUser<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    - Updates the logged in user's information
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Query_Parameters</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">:Username</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request_Body</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">JSON object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Response</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">JSON object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">authentication</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bearer token (JWT)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line536">line 536</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - Updated user object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>// Request data format{  "Username": "johnsmith",  "Password": "newpassword123",  "Email": "johnsmith@example.com",  "Birthday": "1990-01-01"}</code></pre>
+
+    <pre class="prettyprint"><code>// Response data format{  "_id": "507f1f77bcf86cd799439011",  "Username": "johnsmith",  "Email": "johnsmith@example.com",  "Birthday": "1990-01-01",  "FavoriteMovies": ["507f1f77bcf86cd799439012"]}</code></pre>
+
+
+
+        
     
 
     
@@ -2057,13 +5843,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Movies">Movies</a></li><li><a href="global.html#Users">Users</a></li><li><a href="global.html#allowedOrigins">allowedOrigins</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#generateJWTToken">generateJWTToken</a></li><li><a href="global.html#getAllMovies">getAllMovies</a></li><li><a href="global.html#getDirectorByName">getDirectorByName</a></li><li><a href="global.html#getGenreByName">getGenreByName</a></li><li><a href="global.html#getMovieByTitle">getMovieByTitle</a></li><li><a href="global.html#loginUser">loginUser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Movies">Movies</a></li><li><a href="global.html#Users">Users</a></li><li><a href="global.html#addToFavorites">addToFavorites</a></li><li><a href="global.html#advancedSearch">advancedSearch</a></li><li><a href="global.html#allowedOrigins">allowedOrigins</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#generalSearch">generalSearch</a></li><li><a href="global.html#generateJWTToken">generateJWTToken</a></li><li><a href="global.html#getAllActors">getAllActors</a></li><li><a href="global.html#getAllActresses">getAllActresses</a></li><li><a href="global.html#getAllGenres">getAllGenres</a></li><li><a href="global.html#getAllMovies">getAllMovies</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getDirectorByName">getDirectorByName</a></li><li><a href="global.html#getFeaturedMovies">getFeaturedMovies</a></li><li><a href="global.html#getGenreByName">getGenreByName</a></li><li><a href="global.html#getMovieById">getMovieById</a></li><li><a href="global.html#getMovieByTitle">getMovieByTitle</a></li><li><a href="global.html#getMoviesByGenre">getMoviesByGenre</a></li><li><a href="global.html#getUserByUsername">getUserByUsername</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#getWelcome">getWelcome</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#paginatedSearch">paginatedSearch</a></li><li><a href="global.html#quickSearch">quickSearch</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#removeFromFavorites">removeFromFavorites</a></li><li><a href="global.html#searchMoviesByActor">searchMoviesByActor</a></li><li><a href="global.html#searchMoviesByDirector">searchMoviesByDirector</a></li><li><a href="global.html#searchMoviesByGenre">searchMoviesByGenre</a></li><li><a href="global.html#searchMoviesByTitle">searchMoviesByTitle</a></li><li><a href="global.html#searchSuggestions">searchSuggestions</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Sep 17 2025 13:51:31 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Sep 20 2025 20:13:30 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
