@@ -36,28 +36,37 @@ The myFlix API is a RESTful web service that provides movie information and user
    
    Create a `.env` file in the root directory and add the following environment variables:
    ```env
-   CONNECTION_URI=mongodb+srv://myFlixDBAdmin:Gq8HHYFxNVRXf8ty@cluster0.5tc0jod.mongodb.net/myFlixDB?retryWrites=true&w=majority&appName=Cluster0
+   CONNECTION_URI=your_mongodb_connection_string_here
    JWT_SECRET=your_jwt_secret_key_here
    PORT=8080
    ```
    
    **MongoDB Connection Options:**
-   - **Provided MongoDB Atlas**: `mongodb+srv://myFlixDBAdmin:Gq8HHYFxNVRXf8ty@cluster0.5tc0jod.mongodb.net/myFlixDB?retryWrites=true&w=majority&appName=Cluster0`
-   - **Your own MongoDB Atlas**: `mongodb+srv://username:password@cluster.mongodb.net/myflix?retryWrites=true&w=majority`
+   - **MongoDB Atlas**: `mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority&appName=Cluster0`
    - **Local MongoDB**: `mongodb://localhost:27017/myflix`
+   
+   **Important Security Note:** Never commit your actual database credentials to Git. Always use environment variables and add `.env` to your `.gitignore` file.
 
 4. **Database Setup**
    
    Make sure your MongoDB database is running and accessible. The application will automatically connect using the CONNECTION_URI you provided.
 
-5. **Start the development server**
+5. **Security: Protect Your Environment Variables**
+   
+   Ensure your `.env` file is listed in `.gitignore` to prevent committing sensitive information:
+   ```gitignore
+   .env
+   node_modules/
+   ```
+
+6. **Start the development server**
    ```bash
    npm start
    ```
    
    The API will be available at `http://localhost:8080`
 
-6. **View API Documentation**
+7. **View API Documentation**
    
    Once the server is running, you can view the generated API documentation at:
    ```
