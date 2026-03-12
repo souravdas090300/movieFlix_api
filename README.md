@@ -190,6 +190,8 @@ Heroku sets `PORT` automatically. This app also requires:
 - `CONNECTION_URI` for MongoDB
 - `JWT_SECRET` for token signing and verification
 
+If `CONNECTION_URI` is not set, the app will still boot and serve the root and health endpoints, but database-backed API routes will return `503 Service Unavailable` until MongoDB is configured.
+
 If you use MongoDB Atlas, ensure your Heroku app IP access is allowed in Atlas. The simplest option during setup is temporarily allowing access from anywhere (`0.0.0.0/0`) and then tightening it later.
 
 ### Environment Variables Required

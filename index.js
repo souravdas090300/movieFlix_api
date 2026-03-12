@@ -77,9 +77,26 @@ const Users = Models.User;
 
 /**
  * Connect to MongoDB database using mongoose
- * Uses CONNECTION_URI environment variable
+ * Uses CONNECTION_URI or MONGODB_URI environment variable
  */
-mongoose.connect(process.env.CONNECTION_URI);
+const connectionUri = process.env.CONNECTION_URI || process.env.MONGODB_URI;
+let isDatabaseAvailable = false;
+
+if (connectionUri) {
+  mongoose
+    .connect(connectionUri)
+    .then(() => {
+      isDatabaseAvailable = true;
+      console.log("MongoDB connection established");
+    })
+    .catch((error) => {
+      console.error("MongoDB connection failed:", error.message);
+    });
+} else {
+  console.warn(
+    "MongoDB connection string is not configured. Database-backed routes will return 503 until CONNECTION_URI or MONGODB_URI is set."
+  );
+}
 
 /**
  * @function getWelcome
@@ -94,6 +111,24 @@ app.get("/", (req, res) => {
   res.send(
     "Welcome to myFlix API! Use /movies for movies or /users for user operations."
   );
+});
+
+app.get("/health", (req, res) => {
+  res.status(isDatabaseAvailable ? 200 : 503).json({
+    status: isDatabaseAvailable ? "ok" : "degraded",
+    database: isDatabaseAvailable ? "connected" : "unavailable",
+  });
+});
+
+app.use((req, res, next) => {
+  if (isDatabaseAvailable) {
+    return next();
+  }
+
+  return res.status(503).json({
+    error:
+      "Database is not configured. Set CONNECTION_URI or MONGODB_URI to enable this endpoint.",
+  });
 });
 
 /**
