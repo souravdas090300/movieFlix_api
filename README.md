@@ -150,21 +150,47 @@ The API returns appropriate HTTP status codes and error messages:
 ### Heroku Deployment
 This project is configured for easy deployment to Heroku:
 
-1. **Create a Heroku app**
+1. **Install the Heroku CLI and log in**
+   ```bash
+   heroku login
+   ```
+
+2. **Create a Heroku app**
    ```bash
    heroku create your-app-name
    ```
 
-2. **Set environment variables on Heroku**
+3. **Set environment variables on Heroku**
    ```bash
    heroku config:set CONNECTION_URI=your_mongodb_connection_string
    heroku config:set JWT_SECRET=your_jwt_secret_key
    ```
 
-3. **Deploy to Heroku**
+4. **Verify your config vars**
+   ```bash
+   heroku config
+   ```
+
+5. **Deploy to Heroku**
    ```bash
    git push heroku main
    ```
+
+   If your default branch is `master`, use:
+   ```bash
+   git push heroku master
+   ```
+
+6. **Open the deployed API**
+   ```bash
+   heroku open
+   ```
+
+Heroku sets `PORT` automatically. This app also requires:
+- `CONNECTION_URI` for MongoDB
+- `JWT_SECRET` for token signing and verification
+
+If you use MongoDB Atlas, ensure your Heroku app IP access is allowed in Atlas. The simplest option during setup is temporarily allowing access from anywhere (`0.0.0.0/0`) and then tightening it later.
 
 ### Environment Variables Required
 - `CONNECTION_URI` - MongoDB connection string
@@ -175,7 +201,7 @@ This project is configured for easy deployment to Heroku:
 
 ### Running in Development Mode
 ```bash
-npm run dev
+npm start
 ```
 
 ### Generating Documentation

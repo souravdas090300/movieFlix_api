@@ -5,7 +5,11 @@
  * @version 1.0.0
  */
 
-const jwtSecret = "your_jwt_secret"; // This has to be the same key used in the JWTStrategy
+const jwtSecret = process.env.JWT_SECRET;
+
+if (!jwtSecret) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
 
 const jwt = require("jsonwebtoken"),
   passport = require("passport");

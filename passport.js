@@ -3,6 +3,12 @@ const passport = require("passport"),
   Models = require("./models.js"),
   passportJWT = require("passport-jwt");
 
+const jwtSecret = process.env.JWT_SECRET;
+
+if (!jwtSecret) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
+
 let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
@@ -43,7 +49,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: "your_jwt_secret",
+      secretOrKey: jwtSecret,
     },
     async (jwtPayload, callback) => {
       return await Users.findById(jwtPayload._id)
