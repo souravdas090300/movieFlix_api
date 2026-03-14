@@ -48,16 +48,23 @@ app.use(express.static("public"));
  * Configure CORS (Cross-Origin Resource Sharing)
  * Allows requests only from specified origins
  */
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn't found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn\'t allow access from origin ' + origin;
+    if (allowedOrigins.indexOf(origin) === -1) {
+      let message =
+        "The CORS policy for this application doesn't allow access from origin " +
+        origin;
       return callback(new Error(message), false);
     }
     return callback(null, true);
-  }
-}));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 const passport = require("passport");
 let auth = require("./auth")(app);
