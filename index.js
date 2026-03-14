@@ -64,7 +64,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 
 const passport = require("passport");
 let auth = require("./auth")(app);
