@@ -33,6 +33,20 @@ function normalizeTitle(title) {
     .replace(/[\u2019']/g, "'");
 }
 
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildFlexibleTitleRegex(title) {
+  const normalized = String(title || "").trim().replace(/\s+/g, " ");
+  const escaped = escapeRegex(normalized);
+  const pattern = escaped
+    .replace(/\ /g, "\\s+")
+    .replace(/['\u2019]/g, "['\\u2019]");
+
+  return new RegExp(`^${pattern}$`, "i");
+}
+
 function applyPosterFixes(payload) {
   if (Array.isArray(payload)) return payload.map(applyPosterFixes);
   if (!payload || typeof payload !== "object") return payload;
@@ -261,10 +275,15 @@ app.get(
       return res.status(422).json({ errors: errors.array() });
     }
     try {
-      const movie = await Movies.findOne({ Title: req.params.title });
+      const requestedTitle = decodeURIComponent(req.params.title || "");
+      const movie = await Movies.findOne({
+        Title: { $regex: buildFlexibleTitleRegex(requestedTitle) },
+      });
+
       if (!movie) {
         return res.status(404).json({ error: "Movie not found" });
       }
+
       res.status(200).json(movie);
     } catch (error) {
       console.error(error);
