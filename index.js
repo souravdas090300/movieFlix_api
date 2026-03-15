@@ -47,22 +47,44 @@ function buildFlexibleTitleRegex(title) {
   return new RegExp(`^${pattern}$`, "i");
 }
 
+function isPlainObject(value) {
+  if (!value || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
 function applyPosterFixes(payload) {
   if (Array.isArray(payload)) return payload.map(applyPosterFixes);
   if (!payload || typeof payload !== "object") return payload;
 
   // Mongoose documents need conversion before cloning, otherwise fields are nested in _doc.
   const source =
-    typeof payload.toObject === "function"
+    typeof payload.toObject === "function" && (payload.$__ || payload._doc)
       ? payload.toObject()
       : payload;
+
+  // Keep BSON types, Date, and other class instances untouched.
+  if (!isPlainObject(source)) {
+    return source;
+  }
 
   const clone = { ...source };
   if (typeof clone.Title === "string") {
     const fixed = posterFixByTitle[normalizeTitle(clone.Title)];
     if (fixed) clone.ImagePath = fixed;
   }
-  for (const key of Object.keys(clone)) clone[key] = applyPosterFixes(clone[key]);
+
+  for (const key of Object.keys(clone)) {
+    const value = clone[key];
+    if (
+      Array.isArray(value) ||
+      isPlainObject(value) ||
+      (value && typeof value.toObject === "function" && (value.$__ || value._doc))
+    ) {
+      clone[key] = applyPosterFixes(value);
+    }
+  }
+
   return clone;
 }
 
