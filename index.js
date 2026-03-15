@@ -19,18 +19,13 @@ const { check, validationResult } = require('express-validator');
 
 /**
  * Canonical poster URLs for titles with known broken image links in data.
- * These are applied at response time so existing DB records do not need manual edits.
+ * Applied at response time — no DB edits required.
  */
 const posterFixByTitle = {
   "the matrix": "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
-  "matrix": "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
   "schindler's list": "https://upload.wikimedia.org/wikipedia/en/3/38/Schindler%27s_List_movie.jpg",
 };
 
-/**
- * Normalize title for dictionary lookups.
- * Handles both straight and curly apostrophes.
- */
 function normalizeTitle(title) {
   return String(title || "")
     .trim()
@@ -38,31 +33,15 @@ function normalizeTitle(title) {
     .replace(/[\u2019']/g, "'");
 }
 
-/**
- * Recursively applies poster fixes to movie-like objects in JSON responses.
- */
 function applyPosterFixes(payload) {
-  if (Array.isArray(payload)) {
-    return payload.map(applyPosterFixes);
-  }
-
-  if (!payload || typeof payload !== "object") {
-    return payload;
-  }
-
+  if (Array.isArray(payload)) return payload.map(applyPosterFixes);
+  if (!payload || typeof payload !== "object") return payload;
   const clone = { ...payload };
-
   if (typeof clone.Title === "string") {
-    const fixedPoster = posterFixByTitle[normalizeTitle(clone.Title)];
-    if (fixedPoster) {
-      clone.ImagePath = fixedPoster;
-    }
+    const fixed = posterFixByTitle[normalizeTitle(clone.Title)];
+    if (fixed) clone.ImagePath = fixed;
   }
-
-  for (const key of Object.keys(clone)) {
-    clone[key] = applyPosterFixes(clone[key]);
-  }
-
+  for (const key of Object.keys(clone)) clone[key] = applyPosterFixes(clone[key]);
   return clone;
 }
 
@@ -87,10 +66,9 @@ let allowedOrigins = [
  */
 const app = express();
 
-// Apply known poster corrections in all JSON responses.
+// Apply known poster corrections to all JSON responses.
 app.use((req, res, next) => {
   const originalJson = res.json.bind(res);
-
   res.json = (body) => originalJson(applyPosterFixes(body));
   next();
 });
