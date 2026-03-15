@@ -1,96 +1,30 @@
-# myFlix Angular Client
+# myFlix API Documentation
 
-A single-page, responsive movie application built with Angular, showcasing movie information with user authentication and profile management capabilities. This client-side application connects to the myFlix REST API to provide users with access to movie data, director and genre information, and personal profile management.
+## Overview
+The myFlix API is a RESTful web service that provides movie information and user management functionality. This API allows users to register, log in, browse movies, and manage their list of favorite movies.
 
-## 📋 Project Overview
+## Features
+- User registration and authentication
+- JWT-based authorization
+- Movie browsing and search
+- User favorites management
+- Input validation and error handling
+- CORS-enabled for web applications
 
-**myFlix Angular Client** is part of Achievement 6 of the CareerFoundry Full-Stack Web Development program. This project demonstrates proficiency in Angular framework development, Angular Material design implementation, and modern web development practices including comprehensive documentation and code commenting using TypeDoc.
-
-### Key Features
-
-- **User Authentication**: Secure user registration and login system
-- **Movie Catalog**: Browse and view detailed information about movies
-- **Movie Details**: Access comprehensive information including descriptions, genres, and directors
-- **Director Information**: View detailed director biographies and filmographies
-- **Genre Exploration**: Discover movies by genre with detailed genre descriptions
-- **User Profiles**: Personal profile management with the ability to update user information
-- **Favorites Management**: Add and remove movies from personal favorites list
-- **Responsive Design**: Fully responsive interface that works on all devices
-- **Material Design**: Clean, modern UI built with Angular Material components
-
-## 🚀 Live Demo
-
-- **Live Application**: [myFlix Angular Client](https://souravdas090300.github.io/myFlix-Angular-client/)
-- **API Documentation**: Available in the `docs/` folder after running TypeDoc
-
-## � Screenshots
-
-### Welcome Page
-![Welcome Page](public/Screenshot%202025-09-18%20215433.png)
-*Landing page with login and registration options*
-
-### Movie Catalog
-![Movie Catalog](public/Screenshot%202025-09-20%20191338.png)
-*Browse through the complete movie collection*
-
-### Movie Details
-![Movie Details](public/Screenshot%202025-09-20%20191421.png)
-*Detailed view of movie information including director and genre details*
-
-### User Profile
-![User Profile](public/Screenshot%202025-09-21%20214933.png)
-*User profile management with favorites and account settings*
-
-## �🛠️ Built With
-
-- **Frontend Framework**: Angular (v18+)
-- **UI Components**: Angular Material
-- **Language**: TypeScript
-- **Styling**: SCSS
-- **HTTP Client**: Angular HttpClient
-- **Routing**: Angular Router
-- **Documentation**: TypeDoc
-- **Build Tool**: Angular CLI
-- **Deployment**: GitHub Pages
-
-## 📁 Project Structure
-
-```
-src/
-├── app/
-│   ├── components/
-│   │   ├── app/                          # Root app component
-│   │   ├── welcome-page/                 # Landing page with login/registration
-│   │   ├── user-registration-form/       # User registration modal
-│   │   ├── user-login-form/             # User login modal
-│   │   ├── movie-card/                  # Main movies display component
-│   │   ├── movie-details-dialog/        # Movie details modal
-│   │   ├── director-dialog/             # Director information modal
-│   │   ├── genre-dialog/               # Genre information modal
-│   │   └── user-profile/               # User profile management
-│   ├── services/
-│   │   └── fetch-api-data.service.ts   # API communication service
-│   ├── app-routing.module.ts           # Application routing
-│   └── app.module.ts                   # Main app module
-├── assets/                             # Static assets
-├── environments/                       # Environment configurations
-└── styles.scss                        # Global styles
-```
-
-## ⚙️ Installation & Setup
+## Installation
 
 ### Prerequisites
+- Node.js (version 14 or higher)
+- npm (Node Package Manager)
+- MongoDB database (local or cloud-based like MongoDB Atlas)
+- Git (for cloning the repository)
 
-- Node.js (v18 or higher)
-- npm (v9 or higher)
-- Angular CLI (`npm install -g @angular/cli`)
-
-### Installation Steps
+### Setup Instructions
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/souravdas090300/myFlix-Angular-client.git
-   cd myFlix-Angular-client
+   git clone https://github.com/souravdas090300/movieFlix_api.git
+   cd movieFlix_api
    ```
 
 2. **Install dependencies**
@@ -98,152 +32,189 @@ src/
    npm install
    ```
 
-3. **Start development server**
-   ```bash
-   ng serve
+3. **Environment Variables Setup**
+   
+   Create a `.env` file in the root directory and add the following environment variables:
+   ```env
+   CONNECTION_URI=your_mongodb_connection_string_here
+   JWT_SECRET=your_jwt_secret_key_here
+   PORT=8080
    ```
    
-4. **Open your browser**
-   Navigate to `http://localhost:4200/`
+   **MongoDB Connection Options:**
+   - **MongoDB Atlas**: `mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority&appName=Cluster0`
+   - **Local MongoDB**: `mongodb://localhost:27017/myflix`
+   
+   **Important Security Note:** Never commit your actual database credentials to Git. Always use environment variables and add `.env` to your `.gitignore` file.
 
-### Development Scripts
+4. **Database Setup**
+   
+   Make sure your MongoDB database is running and accessible. The application will automatically connect using the CONNECTION_URI you provided.
 
-```bash
-# Start development server
-npm run start
+5. **Security: Protect Your Environment Variables**
+   
+   Ensure your `.env` file is listed in `.gitignore` to prevent committing sensitive information:
+   ```gitignore
+   .env
+   node_modules/
+   ```
 
-# Start with proxy configuration
-npm run dev
+6. **Start the development server**
+   ```bash
+   npm start
+   ```
+   
+   The API will be available at `http://localhost:8080`
 
-# Build for production
-npm run build
+7. **View API Documentation**
+   
+   Once the server is running, you can view the generated API documentation at:
+   ```
+   http://localhost:8080/documentation
+   ```
 
-# Deploy to GitHub Pages
-npm run deploy
+### Optional: Populate Sample Data
+If you want to populate your database with sample movie data, you can create a script or manually add movies through the API endpoints.
 
-# Run unit tests
-npm run test
+## Base URL
 
-# Generate documentation
-npm run docs
-
-# Serve documentation locally
-npm run docs:serve
+### Development
+```
+http://localhost:8080/
 ```
 
-## 🎯 User Stories
-
-As a user, I want to:
-- Register for a new account and log in securely
-- Browse a comprehensive list of movies
-- View detailed information about movies, including descriptions and images
-- Learn about movie directors and their backgrounds
-- Explore different movie genres and their characteristics
-- Manage my personal profile and account information
-- Maintain a list of favorite movies
-- Access the application from any device with responsive design
-
-## 🔧 Technical Requirements Met
-
-- ✅ Built with Angular (v18+)
-- ✅ Latest Node.js and npm versions
-- ✅ User registration and login forms
-- ✅ Angular Material design implementation
-- ✅ Comprehensive TypeDoc code documentation
-- ✅ Technical documentation using JSDoc principles
-- ✅ Hosted on GitHub Pages
-- ✅ Responsive design for all screen sizes
-- ✅ HTTP interceptors for authentication
-- ✅ Error handling and user feedback
-- ✅ Route guards for protected pages
-
-## 📚 API Integration
-
-This application connects to the myFlix REST API which provides:
-- User registration and authentication endpoints
-- Movie data retrieval and search capabilities
-- User profile management
-- Favorites list management
-- Director and genre information
-
-**API Base URL**: `https://movie-flix-fb6c35ebba0a.herokuapp.com/`
-
-## 🤖 AI Assistance Declaration
-
-In accordance with best practices for transparent development, this project's documentation and some code comments were developed with assistance from AI tools to ensure comprehensive coverage and consistent formatting. All AI-generated content has been reviewed, validated, and customized to accurately reflect the project's functionality and requirements.
-
-## 🎨 Design & UX
-
-The application features:
-- **Clean Material Design**: Following Google's Material Design principles
-- **Intuitive Navigation**: Easy-to-use interface with clear call-to-action buttons
-- **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
-- **Accessibility**: Proper ARIA labels and keyboard navigation support
-- **Loading States**: Visual feedback during data fetching operations
-- **Error Handling**: User-friendly error messages and graceful fallbacks
-
-## 📖 Documentation
-
-Comprehensive documentation is available:
-
-- **TypeDoc Documentation**: Run `npm run docs` to generate and `npm run docs:serve` to view
-- **Code Comments**: All components, services, and methods are thoroughly documented
-- **API Documentation**: Available in the generated TypeDoc output
-- **Setup Guide**: This README provides complete setup instructions
-
-## 🧪 Testing
-
-```bash
-# Run unit tests
-npm run test
-
-# Run tests with coverage
-ng test --code-coverage
-
-# Run e2e tests (if configured)
-ng e2e
+### Production
+```
+https://movie-flix-fb6c35ebba0a.herokuapp.com/
 ```
 
-## 🚀 Deployment
-
-The application is configured for deployment on GitHub Pages:
-
-```bash
-# Build and deploy to GitHub Pages
-npm run deploy
+## Authentication
+Most endpoints require authentication using JWT tokens. Include the token in the Authorization header:
+```
+Authorization: Bearer your-jwt-token
 ```
 
-The deployment process:
-1. Builds the application for production
-2. Optimizes assets and bundles
-3. Deploys to GitHub Pages branch
-4. Makes the application available at the live URL
+## API Endpoints
 
-## 🤝 Contributing
+### Authentication
+- `POST /login` - User login
+- `POST /users` - User registration
 
-This is a portfolio project, but suggestions and feedback are welcome:
+### Movies
+- `GET /movies` - Get all movies
+- `GET /movies/:title` - Get movie by title
+- `GET /movies/id/:id` - Get movie by ID
+- `GET /genres` - Get all genres
+- `GET /genres/:name` - Get genre by name
+- `GET /directors/:name` - Get director information
 
+### Users
+- `GET /users` - Get all users (admin only)
+- `GET /users/:username` - Get user by username
+- `PUT /users/:username` - Update user information
+- `DELETE /users/:username` - Delete user account
+- `GET /users/:username/favorites` - Get user's favorite movies
+- `POST /users/:username/movies/:movieId` - Add movie to favorites
+- `DELETE /users/:username/movies/:movieId` - Remove movie from favorites
+
+### Search
+- `GET /search` - General search across multiple fields
+- `GET /search/movies` - Search movies by title
+- `GET /search/genres` - Search movies by genre
+- `GET /search/directors` - Search movies by director
+- `GET /search/actors` - Search movies by actor
+- `GET /search/advanced` - Advanced search with multiple filters
+
+## Error Handling
+The API returns appropriate HTTP status codes and error messages:
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request
+- `401` - Unauthorized
+- `403` - Forbidden
+- `404` - Not Found
+- `422` - Validation Error
+- `500` - Internal Server Error
+
+## Technology Stack
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- Passport.js for authentication
+- bcrypt for password hashing
+- express-validator for input validation
+- CORS for cross-origin requests
+
+## Deployment
+
+### Heroku Deployment
+This project is configured for easy deployment to Heroku:
+
+1. **Install the Heroku CLI and log in**
+   ```bash
+   heroku login
+   ```
+
+2. **Create a Heroku app**
+   ```bash
+   heroku create your-app-name
+   ```
+
+3. **Set environment variables on Heroku**
+   ```bash
+   heroku config:set CONNECTION_URI=your_mongodb_connection_string
+   heroku config:set JWT_SECRET=your_jwt_secret_key
+   ```
+
+4. **Verify your config vars**
+   ```bash
+   heroku config
+   ```
+
+5. **Deploy to Heroku**
+   ```bash
+   git push heroku main
+   ```
+
+   If your default branch is `master`, use:
+   ```bash
+   git push heroku master
+   ```
+
+6. **Open the deployed API**
+   ```bash
+   heroku open
+   ```
+
+Heroku sets `PORT` automatically. This app also requires:
+- `CONNECTION_URI` for MongoDB
+- `JWT_SECRET` for token signing and verification
+
+If `CONNECTION_URI` is not set, the app will still boot and serve the root and health endpoints, but database-backed API routes will return `503 Service Unavailable` until MongoDB is configured.
+
+If you use MongoDB Atlas, ensure your Heroku app IP access is allowed in Atlas. The simplest option during setup is temporarily allowing access from anywhere (`0.0.0.0/0`) and then tightening it later.
+
+### Environment Variables Required
+- `CONNECTION_URI` - MongoDB connection string
+- `JWT_SECRET` - Secret key for JWT token generation
+- `PORT` - Port number (automatically set by Heroku in production)
+
+## Development
+
+### Running in Development Mode
+```bash
+npm start
+```
+
+### Generating Documentation
+To regenerate the API documentation:
+```bash
+npx jsdoc index.js auth.js -d out
+```
+
+## Contributing
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/improvement`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/improvement`)
-5. Create a Pull Request
-
-## 📄 License
-
-This project is part of the CareerFoundry Full-Stack Web Development program and is created for educational purposes.
-
-## 👨‍💻 Developer
-
-**Sourav Das**
-- GitHub: [@souravdas090300](https://github.com/souravdas090300)
-- Project Repository: [myFlix-Angular-client](https://github.com/souravdas090300/myFlix-Angular-client)
-
-## 🔗 Related Projects
-
-- **myFlix API**: Backend REST API for this application
-- **myFlix React Client**: React version of this application
-
----
-
-*This project demonstrates proficiency in Angular development, TypeScript programming, Angular Material implementation, responsive design, and comprehensive documentation practices essential for professional web development.*
+2. Create a feature branch
+3. Make your changes
+4. Run tests (if available)
+5. Submit a pull request

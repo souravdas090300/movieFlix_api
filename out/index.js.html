@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview myFlix API - A RESTful API for movie information and user management
+ * @description This API provides endpoints for managing movies, users, and user favorites.
+ * It includes authentication, authorization, and data validation features.
+ * @author Sourav Das
+ * @version 1.0.0
+ */
+
+const path = require('path');
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const uuid = require("uuid");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const Models = require("./models.js");
+const cors = require("cors");
+const { check, validationResult } = require('express-validator');
+
+/**
+ * List of allowed origins for CORS policy
+ * @type {string[]}
+ */
+let allowedOrigins = [
+  'http://localhost:4200',
+  'http://localhost:8080', 
+  'http://testsite.com', 
+  'http://localhost:1234', 
+  'https://my-flix-clients.netlify.app',
+  'https://my-flix-clients.netlify.app/',
+  'https://souravdas090300.github.io',
+  'https://souravdas090300.github.io/myFlix-Angular-client'
+];
+
+/**
+ * Express application instance
+ * @type {Express}
+ */
+const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan("common"));
+app.use("/documentation", express.static(path.join(__dirname, "out")));
+app.use(express.static("public"));
+
+/**
+ * Configure CORS (Cross-Origin Resource Sharing)
+ * Allows requests only from specified origins
+ */
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn't found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn\'t allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
+
+const passport = require("passport");
+let auth = require("./auth")(app);
+require("./passport"); // Import the passport configuration
+
+/**
+ * Movie model from mongoose schemas
+ * @type {mongoose.Model}
+ */
+const Movies = Models.Movie;
+
+/**
+ * User model from mongoose schemas
+ * @type {mongoose.Model}
+ */
+const Users = Models.User;
+
+/**
+ * Connect to MongoDB database using mongoose
+ * Uses CONNECTION_URI environment variable
+ */
+mongoose.connect(process.env.CONNECTION_URI);
+
+/**
+ * @function getWelcome
+ * @description - Welcome message endpoint
+ * @route GET /
+ * @returns {string} - Welcome message with usage instructions
+ * @example
+ * // Response data format
+ * "Welcome to myFlix API! Use /movies for movies or /users for user operations."
+ */
+app.get("/", (req, res) => {
+  res.send(
+    "Welcome to myFlix API! Use /movies for movies or /users for user operations."
+  );
+});
+
+/**
+ * @function getAllMovies
+ * @description - Return a list of ALL movies to the user
+ * @route GET /movies
+ * @returns {Array} - Array of all movie objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Title": "The Shawshank Redemption",
+ *     "Description": "Two imprisoned men bond over years...",
+ *     "Genre": {
+ *       "Name": "Drama",
+ *       "Description": "Drama genre description"
+ *     },
+ *     "Director": {
+ *       "Name": "Frank Darabont",
+ *       "Bio": "Director biography",
+ *       "Birth": "10/10/1970",
+ *       "Death": "10/10/2025"
+ *     },
+ *     "Actors": ["Tim Robbins", "Morgan Freeman"],
+ *     "ImagePath": "shawshank.png",
+ *     "Featured": true
+ *   }
+ * ]
+ */
+app.get(
+  "/movies",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const movies = await Movies.find();
+      res.status(200).json(movies);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getMovieByTitle
+ * @description - Return data about a single movie by title to the user
+ * @route GET /movies/:title
+ * @param {Query_Parameters} - :title
+ * @returns {object} - Movie object with description, genre, director, image URL, featured status
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Title": "The Shawshank Redemption",
+ *   "Description": "Two imprisoned men bond over years...",
+ *   "Genre": {
+ *     "Name": "Drama",
+ *     "Description": "Drama genre description"
+ *   },
+ *   "Director": {
+ *     "Name": "Frank Darabont",
+ *     "Bio": "Director biography",
+ *     "Birth": "10/10/1970",
+ *     "Death": "10/10/2025"
+ *   },
+ *   "ImagePath": "shawshank.png",
+ *   "Featured": true
+ * }
+ */
+app.get(
+  "/movies/:title",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('title', 'Title is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movie = await Movies.findOne({ Title: req.params.title });
+      if (!movie) {
+        return res.status(404).json({ error: "Movie not found" });
+      }
+      res.status(200).json(movie);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getMovieById
+ * @description - Get movie by ID
+ * @route GET /movies/id/:id
+ * @param {Query_Parameters} - :id
+ * @returns {object} - Movie object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Title": "The Shawshank Redemption",
+ *   "Description": "Two imprisoned men bond over years...",
+ *   "Genre": {
+ *     "Name": "Drama",
+ *     "Description": "Drama genre description"
+ *   },
+ *   "Director": {
+ *     "Name": "Frank Darabont",
+ *     "Bio": "Director biography"
+ *   },
+ *   "ImagePath": "shawshank.png",
+ *   "Featured": true
+ * }
+ */
+// Get movie by ID
+app.get(
+  "/movies/id/:id",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('id', 'Invalid movie ID').isMongoId()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movie = await Movies.findById(req.params.id);
+      if (!movie) {
+        return res.status(404).json({ error: "Movie not found" });
+      }
+      res.status(200).json(movie);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getAllGenres
+ * @description - Get all genres
+ * @route GET /genres
+ * @returns {Array} - Array of all genre objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "Drama",
+ *     "description": "Drama is a category of narrative fiction..."
+ *   }
+ * ]
+ */
+// Get all genres
+app.get(
+  "/genres",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const genres = await Movies.aggregate([
+        {
+          $group: {
+            _id: "$Genre.Name",
+            description: { $first: "$Genre.Description" },
+          },
+        },
+      ]);
+      res.status(200).json(genres);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getGenreByName
+ * @description - Return data about a genre (description) by name/title
+ * @route GET /genres/:name
+ * @param {Query_Parameters} - :name
+ * @returns {object} - Genre object with name and description
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "Name": "Drama",
+ *   "Description": "Drama is a category of narrative fiction..."
+ * }
+ */
+app.get(
+  "/genres/:name",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('name', 'Genre name is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movie = await Movies.findOne({ "Genre.Name": req.params.name });
+      if (!movie) {
+        return res.status(404).json({ error: "Genre not found" });
+      }
+      const genre = movie.Genre;
+      res.status(200).json(genre);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getDirectorByName
+ * @description - Return data about a director (bio, birth year, death year) by name
+ * @route GET /directors/:name
+ * @param {Query_Parameters} - :name
+ * @returns {object} - Director object with name, bio, birth year, death year
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "name": "Frank Darabont",
+ *   "bio": "Director biography",
+ *   "birth": "10/10/1970",
+ *   "death": "10/10/2025",
+ *   "movies": "The Shawshank Redemption"
+ * }
+ */
+app.get(
+  "/directors/:name",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('name', 'Director name is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movie = await Movies.findOne({ "Director.Name": req.params.name });
+      if (!movie) {
+        return res.status(404).json({ error: "Director not found" });
+      }
+      res.status(200).json({
+        name: movie.Director.Name,
+        bio: movie.Director.Bio,
+        birth: movie.Director.Birth,
+        death: movie.Director.Death,
+        movies: movie.Title,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getAllActors
+ * @description - Get all unique actors
+ * @route GET /actors
+ * @returns {Array} - Array of actor names
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * ["Tim Robbins", "Morgan Freeman", "Tom Hanks"]
+ */
+// Get all unique actors
+app.get(
+  "/actors",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const actors = await Movies.aggregate([
+        { $unwind: "$Actors" },
+        { $group: { _id: "$Actors" } },
+        { $sort: { _id: 1 } },
+      ]);
+      const actorNames = actors.map((a) => a._id);
+      res.status(200).json(actorNames);
+    } catch (error) {
+      console.error("Error fetching actors:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+/**
+ * @function getAllActresses
+ * @description - Get all unique actress names
+ * @route GET /actresses
+ * @returns {object} - Object containing array of actress names
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "actresses": ["Actress 1", "Actress 2"]
+ * }
+ */
+// Get all unique actress names
+app.get(
+  "/actresses",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const actresses = await Movies.aggregate([
+        { $unwind: "$Actresses" }, // Fixed: should be "Actresses" not "actresses"
+        {
+          $group: {
+            _id: "$Actresses",
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+      res.status(200).json({
+        actresses: actresses.map((a) => a._id),
+      });
+    } catch (error) {
+      console.error("Error fetching actresses:", error);
+      res.status(500).json({
+        error: "Failed to fetch actresses",
+        details: error.message,
+      });
+    }
+  }
+);
+
+// === USER ROUTES ===
+
+/**
+ * @function getAllUsers
+ * @description - Get all users (should be protected and restricted to admins)
+ * @route GET /users
+ * @returns {Array} - Array of all user objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Username": "johndoe",
+ *     "Email": "john@example.com",
+ *     "Birthday": "1990-01-01",
+ *     "FavoriteMovies": []
+ *   }
+ * ]
+ */
+// Get all users (should be protected and restricted to admins)
+app.get(
+  "/users",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const users = await Users.find();
+      res.status(200).json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function registerUser
+ * @description - Register a new user account
+ * @route POST /users
+ * @param {Request_Body} - JSON object
+ * @returns {object} - Created user object
+ * @example
+ * // Request data format
+ * {
+ *   "Username": "johndoe",
+ *   "Password": "password123",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-01"
+ * }
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-01",
+ *   "FavoriteMovies": []
+ * }
+ */
+app.post('/users',
+  [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], async (req, res) => {
+
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    await Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(400).json({ error: req.body.Username + ' already exists' });
+        } else {
+          Users
+            .create({
+              Username: req.body.Username,
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            })
+            .then((user) => { res.status(201).json(user) })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).json({ error: 'Error: ' + error });
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: 'Error: ' + error });
+      });
+  });
+
+/**
+ * @function updateUser
+ * @description - Updates the logged in user's information
+ * @route PUT /users/:Username
+ * @param {Query_Parameters} - :Username
+ * @param {Request_Body} - JSON object
+ * @param {Response} - JSON object
+ * @param {authentication} - Bearer token (JWT)
+ * @returns {object} - Updated user object
+ * @example
+ * // Request data format
+ * {
+ *   "Username": "johnsmith",
+ *   "Password": "newpassword123",
+ *   "Email": "johnsmith@example.com",
+ *   "Birthday": "1990-01-01"
+ * }
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johnsmith",
+ *   "Email": "johnsmith@example.com",
+ *   "Birthday": "1990-01-01",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439012"]
+ * }
+ */
+app.put(
+  "/users/:Username",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    if (req.user.Username !== req.params.Username) {
+      return res.status(400).json({ error: "Permission denied" });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      {
+        $set: {
+          Username: req.body.Username,
+          Password: hashedPassword,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        },
+      },
+      { new: true }
+    )
+      .then((updatedUser) => {
+        res.json(updatedUser);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: "Error: " + err });
+      });
+  }
+);
+
+
+/**
+ * @function getUserByUsername
+ * @description - Get user by username
+ * @route GET /users/:username
+ * @param {Query_Parameters} - :username
+ * @returns {object} - User object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "Birthday": "1990-01-01",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439012"]
+ * }
+ */
+// Get user by username
+app.get(
+  "/users/:username",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      if (req.user.Username !== req.params.username &amp;&amp; !req.user.isAdmin) {
+        return res.status(403).json({ error: "Not authorized to view this user" });
+      }
+      const user = await Users.findOne({ Username: req.params.username });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getUserFavorites
+ * @description - Get user's favorite movies with full movie details
+ * @route GET /users/:username/favorites
+ * @param {Query_Parameters} - :username
+ * @returns {object} - Object containing username, favorite movies array, and count
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "username": "johndoe",
+ *   "favoriteMovies": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439012",
+ *       "Title": "The Godfather",
+ *       "Description": "Movie description..."
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// Get user's favorite movies with full movie details
+app.get(
+  "/users/:username/favorites",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      if (req.user.Username !== req.params.username &amp;&amp; !req.user.isAdmin) {
+        return res.status(403).json({ error: "Not authorized to view this user's favorites" });
+      }
+      const user = await Users.findOne({ Username: req.params.username }).populate('FavoriteMovies');
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json({
+        username: user.Username,
+        favoriteMovies: user.FavoriteMovies,
+        count: user.FavoriteMovies.length
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function addToFavorites
+ * @description - Add a movie to user's list of favorite movies
+ * @route POST /users/:username/movies/:movieId
+ * @param {Query_Parameters} - :username, :movieId
+ * @returns {object} - Updated user object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]
+ * }
+ */
+app.post(
+  "/users/:username/movies/:movieId",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty(),
+    check('movieId', 'Invalid movie ID').isMongoId()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      if (req.user.Username !== req.params.username) {
+        return res
+          .status(403)
+          .json({ error: "Not authorized to update this user's favorites" });
+      }
+      const updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.username },
+        { $addToSet: { FavoriteMovies: req.params.movieId } },
+        { new: true }
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function removeFromFavorites
+ * @description - Remove a movie from user's list of favorite movies
+ * @route DELETE /users/:username/movies/:movieId
+ * @param {Query_Parameters} - :username, :movieId
+ * @returns {object} - Updated user object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "_id": "507f1f77bcf86cd799439011",
+ *   "Username": "johndoe",
+ *   "Email": "john@example.com",
+ *   "FavoriteMovies": ["507f1f77bcf86cd799439013"]
+ * }
+ */
+app.delete(
+  "/users/:username/movies/:movieId",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty(),
+    check('movieId', 'Invalid movie ID').isMongoId()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      if (req.user.Username !== req.params.username) {
+        return res
+          .status(403)
+          .json({ error: "Not authorized to update this user's favorites" });
+      }
+      const updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.username },
+        { $pull: { FavoriteMovies: req.params.movieId } },
+        { new: true }
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function deleteUser
+ * @description - Delete a user account
+ * @route DELETE /users/:username
+ * @param {Query_Parameters} - :username
+ * @returns {object} - Deletion confirmation message
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "message": "johndoe was deleted."
+ * }
+ */
+app.delete(
+  "/users/:username",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('username', 'Username is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      if (req.user.Username !== req.params.username &amp;&amp; !req.user.isAdmin) {
+        return res.status(403).json({ error: "Not authorized to delete this user" });
+      }
+      const user = await Users.findOneAndDelete({
+        Username: req.params.username,
+      });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json({ message: req.params.username + " was deleted." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// === SEARCH ROUTES ===
+
+/**
+ * @function getFeaturedMovies
+ * @description - Get featured movies (commonly needed for homepage)
+ * @route GET /movies/featured
+ * @returns {Array} - Array of featured movie objects
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Title": "The Shawshank Redemption",
+ *     "Featured": true
+ *   }
+ * ]
+ */
+// Get featured movies (commonly needed for homepage)
+app.get(
+  "/movies/featured",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const featuredMovies = await Movies.find({ Featured: true });
+      res.status(200).json(featuredMovies);
+    } catch (error) {
+      console.error("Error fetching featured movies:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function getMoviesByGenre
+ * @description - Get movies by genre (commonly needed for filtering)
+ * @route GET /movies/genre/:genre
+ * @param {Query_Parameters} - :genre
+ * @returns {Array} - Array of movies matching the genre
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * [
+ *   {
+ *     "_id": "507f1f77bcf86cd799439011",
+ *     "Title": "The Shawshank Redemption",
+ *     "Genre": {
+ *       "Name": "Drama",
+ *       "Description": "Drama genre description"
+ *     }
+ *   }
+ * ]
+ */
+// Get movies by genre (commonly needed for filtering)
+app.get(
+  "/movies/genre/:genre",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('genre', 'Genre is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    try {
+      const movies = await Movies.find({ "Genre.Name": new RegExp(req.params.genre, 'i') });
+      res.status(200).json(movies);
+    } catch (error) {
+      console.error("Error fetching movies by genre:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function generalSearch
+ * @description - General search endpoint - searches across multiple fields
+ * @route GET /search
+ * @param {Query_Parameters} - ?q=searchQuery
+ * @returns {object} - Search results object with query, results array, and count
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// General search endpoint - searches across multiple fields
+app.get(
+  "/search",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty().isLength({ min: 1 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const searchRegex = new RegExp(searchQuery, 'i'); // Case-insensitive search
+      
+      const movies = await Movies.find({
+        $or: [
+          { Title: searchRegex },
+          { Description: searchRegex },
+          { "Genre.Name": searchRegex },
+          { "Director.Name": searchRegex },
+          { Actors: { $in: [searchRegex] } }
+        ]
+      });
+      
+      res.status(200).json({
+        query: searchQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function searchMoviesByTitle
+ * @description - Search movies by title
+ * @route GET /search/movies
+ * @param {Query_Parameters} - ?title=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "shawshank",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// Search movies by title
+app.get(
+  "/search/movies",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('title', 'Title search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const titleQuery = req.query.title;
+      const searchRegex = new RegExp(titleQuery, 'i');
+      
+      const movies = await Movies.find({ Title: searchRegex });
+      
+      res.status(200).json({
+        query: titleQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in movie title search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function searchMoviesByGenre
+ * @description - Search movies by genre
+ * @route GET /search/genres
+ * @param {Query_Parameters} - ?genre=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Genre": {"Name": "Drama"}
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// Search movies by genre
+app.get(
+  "/search/genres",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('genre', 'Genre search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const genreQuery = req.query.genre;
+      const searchRegex = new RegExp(genreQuery, 'i');
+      
+      const movies = await Movies.find({ "Genre.Name": searchRegex });
+      
+      res.status(200).json({
+        query: genreQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in genre search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function searchMoviesByDirector
+ * @description - Search movies by director
+ * @route GET /search/directors
+ * @param {Query_Parameters} - ?director=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "darabont",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Director": {"Name": "Frank Darabont"}
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// Search movies by director
+app.get(
+  "/search/directors",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('director', 'Director search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const directorQuery = req.query.director;
+      const searchRegex = new RegExp(directorQuery, 'i');
+      
+      const movies = await Movies.find({ "Director.Name": searchRegex });
+      
+      res.status(200).json({
+        query: directorQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in director search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function searchMoviesByActor
+ * @description - Search movies by actor
+ * @route GET /search/actors
+ * @param {Query_Parameters} - ?actor=searchQuery
+ * @returns {object} - Search results object
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "tim robbins",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Actors": ["Tim Robbins", "Morgan Freeman"]
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// Search movies by actor
+app.get(
+  "/search/actors",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('actor', 'Actor search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const actorQuery = req.query.actor;
+      const searchRegex = new RegExp(actorQuery, 'i');
+      
+      const movies = await Movies.find({ Actors: { $in: [searchRegex] } });
+      
+      res.status(200).json({
+        query: actorQuery,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in actor search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function advancedSearch
+ * @description - Advanced search with multiple filters
+ * @route GET /search/advanced
+ * @param {Query_Parameters} - ?title=&amp;genre=&amp;director=&amp;actor=&amp;year=
+ * @returns {object} - Search results object with filters applied
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "filters": {
+ *     "title": "shawshank",
+ *     "genre": "drama"
+ *   },
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "count": 1
+ * }
+ */
+// Advanced search with multiple filters
+app.get(
+  "/search/advanced",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { title, genre, director, actor, year } = req.query;
+      let searchCriteria = {};
+      
+      if (title) {
+        searchCriteria.Title = new RegExp(title, 'i');
+      }
+      
+      if (genre) {
+        searchCriteria["Genre.Name"] = new RegExp(genre, 'i');
+      }
+      
+      if (director) {
+        searchCriteria["Director.Name"] = new RegExp(director, 'i');
+      }
+      
+      if (actor) {
+        searchCriteria.Actors = { $in: [new RegExp(actor, 'i')] };
+      }
+      
+      if (year) {
+        searchCriteria.Year = year;
+      }
+      
+      if (Object.keys(searchCriteria).length === 0) {
+        return res.status(400).json({ error: "At least one search parameter is required" });
+      }
+      
+      const movies = await Movies.find(searchCriteria);
+      
+      res.status(200).json({
+        filters: req.query,
+        results: movies,
+        count: movies.length
+      });
+    } catch (error) {
+      console.error("Error in advanced search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function searchSuggestions
+ * @description - Auto-suggestions endpoint for search-as-you-type functionality
+ * @route GET /search/suggestions
+ * @param {Query_Parameters} - ?q=searchQuery&amp;limit=10
+ * @returns {object} - Suggestions object with different categories
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "shaw",
+ *   "suggestions": {
+ *     "movies": [{"type": "movie", "value": "The Shawshank Redemption"}],
+ *     "genres": [{"type": "genre", "value": "Drama"}],
+ *     "directors": [{"type": "director", "value": "Frank Darabont"}],
+ *     "actors": [{"type": "actor", "value": "Tim Robbins"}]
+ *   }
+ * }
+ */
+// Auto-suggestions endpoint for search-as-you-type functionality
+app.get(
+  "/search/suggestions",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty().isLength({ min: 1, max: 50 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const limit = parseInt(req.query.limit) || 10; // Default to 10 suggestions
+      const searchRegex = new RegExp(searchQuery, 'i');
+      
+      // Get movie title suggestions
+      const movieTitles = await Movies.find(
+        { Title: searchRegex },
+        { Title: 1, _id: 0 }
+      ).limit(limit);
+      
+      // Get genre suggestions
+      const genres = await Movies.aggregate([
+        { $match: { "Genre.Name": searchRegex } },
+        { $group: { _id: "$Genre.Name" } },
+        { $limit: 5 },
+        { $project: { _id: 0, name: "$_id" } }
+      ]);
+      
+      // Get director suggestions
+      const directors = await Movies.aggregate([
+        { $match: { "Director.Name": searchRegex } },
+        { $group: { _id: "$Director.Name" } },
+        { $limit: 5 },
+        { $project: { _id: 0, name: "$_id" } }
+      ]);
+      
+      // Get actor suggestions
+      const actors = await Movies.aggregate([
+        { $unwind: "$Actors" },
+        { $match: { "Actors": searchRegex } },
+        { $group: { _id: "$Actors" } },
+        { $limit: 5 },
+        { $project: { _id: 0, name: "$_id" } }
+      ]);
+      
+      res.status(200).json({
+        query: searchQuery,
+        suggestions: {
+          movies: movieTitles.map(m => ({ type: 'movie', value: m.Title })),
+          genres: genres.map(g => ({ type: 'genre', value: g.name })),
+          directors: directors.map(d => ({ type: 'director', value: d.name })),
+          actors: actors.map(a => ({ type: 'actor', value: a.name }))
+        }
+      });
+    } catch (error) {
+      console.error("Error in suggestions:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function quickSearch
+ * @description - Quick search endpoint optimized for fast results (limited fields)
+ * @route GET /search/quick
+ * @param {Query_Parameters} - ?q=searchQuery&amp;limit=20
+ * @returns {object} - Quick search results with essential fields only
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption",
+ *       "Genre": {"Name": "Drama"},
+ *       "Director": {"Name": "Frank Darabont"},
+ *       "Year": 1994,
+ *       "ImagePath": "shawshank.png"
+ *     }
+ *   ],
+ *   "count": 1,
+ *   "isQuickSearch": true
+ * }
+ */
+// Quick search endpoint optimized for fast results (limited fields)
+app.get(
+  "/search/quick",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty().isLength({ min: 1 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const limit = parseInt(req.query.limit) || 20;
+      const searchRegex = new RegExp(searchQuery, 'i');
+      
+      // Return only essential fields for quick display
+      const movies = await Movies.find({
+        $or: [
+          { Title: searchRegex },
+          { "Genre.Name": searchRegex },
+          { "Director.Name": searchRegex },
+          { Actors: { $in: [searchRegex] } }
+        ]
+      }, {
+        Title: 1,
+        "Genre.Name": 1,
+        "Director.Name": 1,
+        Year: 1,
+        ImagePath: 1
+      }).limit(limit);
+      
+      res.status(200).json({
+        query: searchQuery,
+        results: movies,
+        count: movies.length,
+        isQuickSearch: true
+      });
+    } catch (error) {
+      console.error("Error in quick search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+/**
+ * @function paginatedSearch
+ * @description - Search with pagination for better performance
+ * @route GET /search/paginated
+ * @param {Query_Parameters} - ?q=searchQuery&amp;page=1&amp;limit=20
+ * @returns {object} - Search results with pagination information
+ * @param {authentication} - Bearer token (JWT)
+ * @example
+ * // Response data format
+ * {
+ *   "query": "drama",
+ *   "results": [
+ *     {
+ *       "_id": "507f1f77bcf86cd799439011",
+ *       "Title": "The Shawshank Redemption"
+ *     }
+ *   ],
+ *   "pagination": {
+ *     "currentPage": 1,
+ *     "totalPages": 1,
+ *     "totalResults": 1,
+ *     "resultsPerPage": 20,
+ *     "hasNextPage": false,
+ *     "hasPrevPage": false
+ *   }
+ * }
+ */
+// Search with pagination for better performance
+app.get(
+  "/search/paginated",
+  [
+    passport.authenticate("jwt", { session: false }),
+    check('q', 'Search query is required').notEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    
+    try {
+      const searchQuery = req.query.q;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+      const searchRegex = new RegExp(searchQuery, 'i');
+      
+      const searchCriteria = {
+        $or: [
+          { Title: searchRegex },
+          { Description: searchRegex },
+          { "Genre.Name": searchRegex },
+          { "Director.Name": searchRegex },
+          { Actors: { $in: [searchRegex] } }
+        ]
+      };
+      
+      // Get total count for pagination
+      const totalResults = await Movies.countDocuments(searchCriteria);
+      const totalPages = Math.ceil(totalResults / limit);
+      
+      // Get paginated results
+      const movies = await Movies.find(searchCriteria)
+        .skip(skip)
+        .limit(limit);
+      
+      res.status(200).json({
+        query: searchQuery,
+        results: movies,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalResults: totalResults,
+          resultsPerPage: limit,
+          hasNextPage: page &lt; totalPages,
+          hasPrevPage: page > 1
+        }
+      });
+    } catch (error) {
+      console.error("Error in paginated search:", error);
+      res.status(500).json({ error: "Error: " + error });
+    }
+  }
+);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something broke!" });
+});
+
+// Start server
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on port ' + port);
+});
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Movies">Movies</a></li><li><a href="global.html#Users">Users</a></li><li><a href="global.html#addToFavorites">addToFavorites</a></li><li><a href="global.html#advancedSearch">advancedSearch</a></li><li><a href="global.html#allowedOrigins">allowedOrigins</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#generalSearch">generalSearch</a></li><li><a href="global.html#generateJWTToken">generateJWTToken</a></li><li><a href="global.html#getAllActors">getAllActors</a></li><li><a href="global.html#getAllActresses">getAllActresses</a></li><li><a href="global.html#getAllGenres">getAllGenres</a></li><li><a href="global.html#getAllMovies">getAllMovies</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getDirectorByName">getDirectorByName</a></li><li><a href="global.html#getFeaturedMovies">getFeaturedMovies</a></li><li><a href="global.html#getGenreByName">getGenreByName</a></li><li><a href="global.html#getMovieById">getMovieById</a></li><li><a href="global.html#getMovieByTitle">getMovieByTitle</a></li><li><a href="global.html#getMoviesByGenre">getMoviesByGenre</a></li><li><a href="global.html#getUserByUsername">getUserByUsername</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#getWelcome">getWelcome</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#paginatedSearch">paginatedSearch</a></li><li><a href="global.html#quickSearch">quickSearch</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#removeFromFavorites">removeFromFavorites</a></li><li><a href="global.html#searchMoviesByActor">searchMoviesByActor</a></li><li><a href="global.html#searchMoviesByDirector">searchMoviesByDirector</a></li><li><a href="global.html#searchMoviesByGenre">searchMoviesByGenre</a></li><li><a href="global.html#searchMoviesByTitle">searchMoviesByTitle</a></li><li><a href="global.html#searchSuggestions">searchSuggestions</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Sep 20 2025 20:13:30 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

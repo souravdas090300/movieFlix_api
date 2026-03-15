@@ -1,0 +1,101 @@
+/**
+ * @fileoverview Database models for the myFlix API
+ * @description Defines mongoose schemas for movies and users
+ * @author Sourav Das
+ * @version 1.0.0
+ */
+
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
+/**
+ * Movie schema definition
+ * @typedef {Object} Movie
+ * @property {String} Title - Movie title (required)
+ * @property {String} Description - Movie description (required)
+ * @property {Object} Genre - Genre information
+ * @property {String} Genre.Name - Genre name
+ * @property {String} Genre.Description - Genre description
+ * @property {Object} Director - Director information
+ * @property {String} Director.Name - Director name
+ * @property {String} Director.Bio - Director biography
+ * @property {Date} Director.Birth - Director birth date
+ * @property {Date} Director.Death - Director death date
+ * @property {String[]} Actors - Array of actor names
+ * @property {String[]} Actresses - Array of actress names
+ * @property {Number} ReleaseYear - Movie release year
+ * @property {Number} IMDbRating - IMDb rating
+ * @property {String} ImagePath - Movie poster image path
+ * @property {Boolean} Featured - Whether movie is featured
+ */
+let movieSchema = mongoose.Schema({
+  Title: { type: String, required: true },
+  Description: { type: String, required: true },
+  Genre: {
+    Name: String,
+    Description: String,
+  },
+  Director: {
+    Name: String,
+    Bio: String,
+    Birth: Date,
+    Death: Date,
+  },
+  Actors: [String],
+  Actresses: [String],
+  ReleaseYear: Number,
+  IMDbRating: Number,
+  ImagePath: String,
+  Featured: Boolean,
+});
+
+/**
+ * User schema definition
+ * @typedef {Object} User
+ * @property {String} Username - Username (required)
+ * @property {String} Password - Hashed password (required)
+ * @property {String} Email - User email (required)
+ * @property {Date} Birthday - User birthday
+ * @property {ObjectId[]} FavoriteMovies - Array of favorite movie IDs
+ */
+let userSchema = mongoose.Schema({
+  Username: { type: String, required: true },
+  Password: { type: String, required: true },
+  Email: { type: String, required: true },
+  Birthday: Date,
+  FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }],
+});
+
+/**
+ * Hash password using bcrypt
+ * @static
+ * @param {String} password - Plain text password
+ * @returns {String} Hashed password
+ */
+userSchema.statics.hashPassword = function (password) {
+  return bcrypt.hashSync(password, 10);
+};
+
+/**
+ * Validate password against stored hash
+ * @param {String} password - Plain text password to validate
+ * @returns {Boolean} True if password matches, false otherwise
+ */
+userSchema.methods.validatePassword = function (password) {
+  return bcrypt.compareSync(password, this.Password);
+};
+
+/**
+ * Movie model
+ * @type {mongoose.Model<Movie>}
+ */
+let Movie = mongoose.model("Movie", movieSchema);
+
+/**
+ * User model
+ * @type {mongoose.Model<User>}
+ */
+let User = mongoose.model("User", userSchema);
+
+module.exports.Movie = Movie;
+module.exports.User = User;

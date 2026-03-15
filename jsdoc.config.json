@@ -1,0 +1,19 @@
+{
+  "source": {
+    "include": ["./"],
+    "includePattern": "\\.(js|jsx)$",
+    "exclude": ["node_modules/", "out/"]
+  },
+  "opts": {
+    "destination": "./out/",
+    "readme": "./README.md"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "metadata": {
+    "title": "myFlix API Documentation"
+  }
+}
