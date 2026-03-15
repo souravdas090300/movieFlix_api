@@ -22,7 +22,7 @@ const { check, validationResult } = require('express-validator');
  * Applied at response time — no DB edits required.
  */
 const posterFixByTitle = {
-  "the matrix": "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
+  "the matrix": "https://upload.wikimedia.org/wikipedia/en/d/db/The_Matrix.png",
   "schindler's list": "https://upload.wikimedia.org/wikipedia/en/3/38/Schindler%27s_List_movie.jpg",
 };
 

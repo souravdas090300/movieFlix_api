@@ -13,7 +13,7 @@ const FIXES = [
   {
     title: "The Matrix",
     imagePath:
-      "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
+      "https://upload.wikimedia.org/wikipedia/en/d/db/The_Matrix.png",
   },
   {
     title: "Schindler's List",
