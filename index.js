@@ -36,7 +36,14 @@ function normalizeTitle(title) {
 function applyPosterFixes(payload) {
   if (Array.isArray(payload)) return payload.map(applyPosterFixes);
   if (!payload || typeof payload !== "object") return payload;
-  const clone = { ...payload };
+
+  // Mongoose documents need conversion before cloning, otherwise fields are nested in _doc.
+  const source =
+    typeof payload.toObject === "function"
+      ? payload.toObject()
+      : payload;
+
+  const clone = { ...source };
   if (typeof clone.Title === "string") {
     const fixed = posterFixByTitle[normalizeTitle(clone.Title)];
     if (fixed) clone.ImagePath = fixed;
