@@ -275,10 +275,19 @@ app.get(
       return res.status(422).json({ errors: errors.array() });
     }
     try {
-      const requestedTitle = decodeURIComponent(req.params.title || "");
-      const movie = await Movies.findOne({
-        Title: { $regex: buildFlexibleTitleRegex(requestedTitle) },
-      });
+      const requestedValue = decodeURIComponent(req.params.title || "");
+      let movie = null;
+
+      // Compatibility for clients (like some React builds) that call /movies/:id.
+      if (mongoose.Types.ObjectId.isValid(requestedValue)) {
+        movie = await Movies.findById(requestedValue);
+      }
+
+      if (!movie) {
+        movie = await Movies.findOne({
+          Title: { $regex: buildFlexibleTitleRegex(requestedValue) },
+        });
+      }
 
       if (!movie) {
         return res.status(404).json({ error: "Movie not found" });
